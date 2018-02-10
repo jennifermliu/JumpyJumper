@@ -5,12 +5,12 @@ using UnityEngine;
 public class MainCharacter : MonoBehaviour
 {
 
-    public float speed = 0.5f;
+    public float speed = 0.3f;
     public Vector3 maxVelocity = new Vector3(1, 1,1);
     public bool standing;
-    public float jetSpeed = 1f;
+    public float jetSpeed = 0.5f;
     public float airSpeedMultiplier = .1f;
-    public float jump=1f ;
+    public float jump=0.5f ;
     public LineRenderer line;
     public float forceX = 0f;
     public float forceY = 0f;
@@ -65,14 +65,19 @@ public class MainCharacter : MonoBehaviour
         //GetComponent<Rigidbody>().AddForce (new Vector3 (forceX, forceY, forceZ));
         //GetComponent<Rigidbody>().velocity += (new Vector3 (forceX, forceY, forceZ));
         if (Input.GetKey ("space")) {
-            //if (transform.localPosition.y < 1   ) 
+            
+            //Vector3 normalized = new Vector3(forceX,0,forceZ);
+            //normalized = Vector3.Normalize(normalized);
+            //GetComponent<Rigidbody>().velocity += (new Vector3 (normalized.x, forceY, normalized.z));
             GetComponent<Rigidbody>().velocity += (new Vector3 (forceX, forceY, forceZ));
         }
         
-        Vector3 startingPoint = transform.position;
+        
+        Vector3 startingPoint = new Vector3(transform.position.x, 0 , transform.position.z);
         line.SetPosition(0, startingPoint);
-        Vector3 endPoint= new Vector3(forceX, forceY, forceZ);
-        line.SetPosition(1, startingPoint+endPoint);
+        Vector3 endPoint= new Vector3(forceX, 0, forceZ);
+        endPoint.Normalize();
+        line.SetPosition(1, startingPoint+endPoint*3);
         
     }
     
@@ -81,14 +86,13 @@ public class MainCharacter : MonoBehaviour
         //line.sortingLayerName = "OnTop";
         //line.sortingOrder = 5;
         line.SetVertexCount(2);
-        Vector3 startingPoint = transform.position;
+        Vector3 startingPoint = new Vector3(transform.position.x, 0 , transform.position.z);
         line.SetPosition(0, startingPoint);
-        Vector3 endPoint= new Vector3(forceX, forceY, forceZ);
+        Vector3 endPoint= new Vector3(forceX, 0, forceZ);
         line.SetPosition(1, startingPoint+endPoint);
-        line.SetWidth(0.1f, 0.5f);
+        line.SetWidth(1f, 1f);
         line.useWorldSpace = true;
   
     }
-    
     
 }

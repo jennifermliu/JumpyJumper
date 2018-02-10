@@ -15,9 +15,9 @@ public class MainController : MonoBehaviour {
 	void Update () {
 
 		if (Input.GetKey ("left")) {
-			moving.x = 0.5f;
+			moving.x = 0.1f;
 		} else if (Input.GetKey("right")) {
-			moving.x = -0.5f;
+			moving.x = -0.1f;
 		}
 
 		if (Input.GetKey ("space")) {
@@ -26,11 +26,10 @@ public class MainController : MonoBehaviour {
 
 		
 		if (Input.GetKey ("down")) {
-			moving.z = 0.5f;
+			moving.z = 0.1f;
 		} else if (Input.GetKey("up")) {
-			moving.z = -0.5f;
+			moving.z = -0.1f;
 		} 
 
 	}
 }
-
