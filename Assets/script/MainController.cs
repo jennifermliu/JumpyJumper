@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MainController : MonoBehaviour {
 
-	public Vector2 moving = new Vector2();
+	public Vector3 moving = new Vector3(0.0f, 0.0f, 0.0f);
 
 	// Use this for initialization
 	void Start () {
@@ -14,19 +14,27 @@ public class MainController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		moving.x = moving.y = 0;
+		//moving.x = moving.y = moving.z = 0;
 
-		if (Input.GetKey ("right")) {
-			moving.x = 1;
-		} else if (Input.GetKey("left")) {
-			moving.x = -1;
+		if (Input.GetKey ("left")) {
+			moving.x = 0.5f;
+		} else if (Input.GetKey("right")) {
+			moving.x = -0.5f;
 		}
 
-		if (Input.GetKey ("up")) {
-			moving.y = 1;
-		} else if (Input.GetKey ("down")) {
-			moving.y = -1;
-		}
+		if (Input.GetKey ("space")) {
+			moving.y = 0.1f;
+		} 
+		//else if (Input.GetKey ("down")) {
+		//	moving.y = -1;
+		//}
+		
+		if (Input.GetKey ("down")) {
+			moving.z = 0.5f;
+		} else if (Input.GetKey("up")) {
+			moving.z = -0.5f;
+		} 
 
 	}
 }
+

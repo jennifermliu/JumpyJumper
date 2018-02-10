@@ -5,12 +5,12 @@ using UnityEngine;
 public class MainCharacter : MonoBehaviour
 {
 
-    public float speed = 10f;
-    public Vector2 maxVelocity = new Vector2(3, 5);
+    public float speed = 0.5f;
+    public Vector3 maxVelocity = new Vector3(1, 1,1);
     public bool standing;
-    public float jetSpeed = 15f;
-    public float airSpeedMultiplier = .3f;
-    public float jump=2f ;
+    public float jetSpeed = 1f;
+    public float airSpeedMultiplier = .1f;
+    public float jump=1f ;
 
 
     private MainController controller;
@@ -24,9 +24,10 @@ public class MainCharacter : MonoBehaviour
     // Update is called once per frame
     void Update () {
         
-        /*
+        
         var forceX = 0f;
         var forceY = 0f;
+        var forceZ = 0f;
 
         var absVelX = Mathf.Abs (GetComponent<Rigidbody>().velocity.x);
         var absVelY = Mathf.Abs (GetComponent<Rigidbody>().velocity.y);
@@ -39,12 +40,17 @@ public class MainCharacter : MonoBehaviour
         }
         
         
-        if (controller.moving.x != 0) {
+        if (controller.moving.x.Equals(0)) {
             if(absVelX < maxVelocity.x){
-
                 forceX = standing ? speed * controller.moving.x : (speed * controller.moving.x * airSpeedMultiplier);
-
-                transform.localScale = new Vector3(forceX > 0 ? 1 : -1, 1, 1);
+                //transform.localScale = new Vector3(forceX > 0 ? 1 : -1, 1, 1);
+            }
+        }
+        
+        if (controller.moving.z.Equals(0)) {
+            if(absVelZ < maxVelocity.z){
+                forceZ = standing ? speed * controller.moving.z : (speed * controller.moving.z * airSpeedMultiplier);
+                //transform.localScale = new Vector3(forceZ > 0 ? 1 : 1, 1, -1);
             }
         }
 
@@ -53,32 +59,14 @@ public class MainCharacter : MonoBehaviour
                 forceY = jetSpeed * controller.moving.y;
         }
 
-        GetComponent<Rigidbody>().AddForce (new Vector3 (forceX, forceY, 0));
-        if (Input.GetKey ("a")) {
-
+        //GetComponent<Rigidbody>().AddForce (new Vector3 (forceX, forceY, forceZ));
+        //GetComponent<Rigidbody>().velocity += (new Vector3 (forceX, forceY, forceZ));
+        if (Input.GetKey ("space")) {
             //if (transform.localPosition.y < 1   ) 
-                GetComponent<Rigidbody>().AddForce (new Vector3 (0, jump, 5 ));
-        }
-        
-        */
-        if (Input.GetKey ("right")) {
-            transform.Rotate(Vector3.right*Time.deltaTime);
-        } else if (Input.GetKey("left")) {
-            transform.Rotate(Vector3.left*Time.deltaTime);
+            GetComponent<Rigidbody>().velocity += (new Vector3 (forceX, forceY, forceZ));
         }
 
-        if (Input.GetKey ("up")) {
-            transform.Rotate(Vector3.up*Time.deltaTime);
-        } else if (Input.GetKey ("down")) {
-            transform.Rotate(Vector3.down*Time.deltaTime);
-        }
-
-        if (Input.GetKey("space"))
-        {
-            
-            GetComponent<Rigidbody>().AddForce(new Vector3(0,));
-        }
-
+       
 
     }
 }
