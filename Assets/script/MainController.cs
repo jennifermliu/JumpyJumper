@@ -14,8 +14,6 @@ public class MainController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		//moving.x = moving.y = moving.z = 0;
-
 		if (Input.GetKey ("left")) {
 			moving.x = 0.5f;
 		} else if (Input.GetKey("right")) {
@@ -25,9 +23,7 @@ public class MainController : MonoBehaviour {
 		if (Input.GetKey ("space")) {
 			moving.y = 0.1f;
 		} 
-		//else if (Input.GetKey ("down")) {
-		//	moving.y = -1;
-		//}
+
 		
 		if (Input.GetKey ("down")) {
 			moving.z = 0.5f;
