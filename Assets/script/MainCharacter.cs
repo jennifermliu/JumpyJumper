@@ -5,79 +5,60 @@ using UnityEngine;
 public class MainCharacter : MonoBehaviour
 {
 
-    public float speed = 0.3f;
-    public Vector3 maxVelocity = new Vector3(1, 1,1);
-    public bool standing;
-    public float jetSpeed = 0.5f;
-    public float airSpeedMultiplier = .1f;
-    public float jump=0.5f ;
     public LineRenderer line;
-    public float forceX = 0f;
-    public float forceY = 0f;
-    public float forceZ = 0f;
-    
-    private MainController controller;
+    public float thrust;
+    public float minThrust;
+    public float rotationSpeed;
+
+    private bool hasJumped;
+    public float thrustIncrement;
+    private Vector3 forceDirection;
+    private Vector3 forceMagnitude;
+    public float arrowScale;
 
     void Start(){
-        controller = GetComponent<MainController> ();
-        GetComponent<Rigidbody>().freezeRotation = true;
         line = GetComponent<LineRenderer>();
         SetupLine();
         line.material.color=Color.red;
+        rotationSpeed = 200f;
+        minThrust = 3f;
+        hasJumped = false;
+        thrust = minThrust;
+        arrowScale = 0.4f;
+        thrustIncrement = 5f;
+
     }
 
     // Update is called once per frame
     void Update () {
-        
-        forceX = 0f;
-        forceY = 0f;
-        forceZ = 0f;
 
-        var absVelX = Mathf.Abs (GetComponent<Rigidbody>().velocity.x);
-        var absVelY = Mathf.Abs (GetComponent<Rigidbody>().velocity.y);
-        var absVelZ = Mathf.Abs (GetComponent<Rigidbody>().velocity.z);
-
-        if (absVelY < .2f) {
-            standing = true;
-        } else {
-            standing = false;
-        }
-         
-        if (!controller.moving.x.Equals(0)) {
-            if(absVelX < maxVelocity.x){
-                forceX = standing ? speed * controller.moving.x : (speed * controller.moving.x * airSpeedMultiplier);
-                //transform.localScale = new Vector3(forceX > 0 ? 1 : -1, 1, 1);
-            }
-        }
-        
-        if (!controller.moving.z.Equals(0)) {
-            if(absVelZ < maxVelocity.z){
-                forceZ = standing ? speed * controller.moving.z : (speed * controller.moving.z * airSpeedMultiplier);
-                //transform.localScale = new Vector3(forceZ > 0 ? 1 : 1, 1, -1);
-            }
+        if (Input.GetKey ("left")) {
+            transform.Rotate(0, -Time.deltaTime*rotationSpeed, 0);
+        } else if (Input.GetKey("right")) {
+            transform.Rotate(0, Time.deltaTime*rotationSpeed, 0);
         }
 
-        if (controller.moving.y > 0) {
-            if(absVelY < maxVelocity.y)
-                forceY = jetSpeed * controller.moving.y;
+        forceDirection = transform.forward + transform.up;
+
+        if (Input.GetKey ("space")){
+            hasJumped = true;
+            thrust += Time.deltaTime * thrustIncrement;
         }
 
-        //GetComponent<Rigidbody>().AddForce (new Vector3 (forceX, forceY, forceZ));
-        //GetComponent<Rigidbody>().velocity += (new Vector3 (forceX, forceY, forceZ));
-        if (Input.GetKey ("space")) {
-            
-            //Vector3 normalized = new Vector3(forceX,0,forceZ);
-            //normalized = Vector3.Normalize(normalized);
-            //GetComponent<Rigidbody>().velocity += (new Vector3 (normalized.x, forceY, normalized.z));
-            GetComponent<Rigidbody>().velocity += (new Vector3 (forceX, forceY, forceZ));
+        forceMagnitude = forceDirection * thrust;
+
+        if (Input.GetKeyUp ("space")) {
+            GetComponent<Rigidbody>().AddForce(forceMagnitude, ForceMode.Impulse);
+            thrust = minThrust;
         }
+
+
+        Vector3 offset = new Vector3(0f, 0.5f, 0f);
         
-        
-        Vector3 startingPoint = new Vector3(transform.position.x, 0 , transform.position.z);
+        Vector3 startingPoint = transform.position+offset;
         line.SetPosition(0, startingPoint);
-        Vector3 endPoint= new Vector3(forceX, 0, forceZ);
-        endPoint.Normalize();
-        line.SetPosition(1, startingPoint+endPoint*3);
+        Vector3 endPoint = forceDirection + forceDirection * arrowScale * (thrust - minThrust);
+        line.SetPosition(1, startingPoint+endPoint);
         
     }
     
@@ -85,14 +66,15 @@ public class MainCharacter : MonoBehaviour
     {
         //line.sortingLayerName = "OnTop";
         //line.sortingOrder = 5;
-        line.SetVertexCount(2);
-        Vector3 startingPoint = new Vector3(transform.position.x, 0 , transform.position.z);
-        line.SetPosition(0, startingPoint);
-        Vector3 endPoint= new Vector3(forceX, 0, forceZ);
-        line.SetPosition(1, startingPoint+endPoint);
-        line.SetWidth(1f, 1f);
-        line.useWorldSpace = true;
+        //line.SetVertexCount(2);
+        //Vector3 startingPoint = transform.position;
+        //line.SetPosition(0, startingPoint);
+        //Vector3 endPoint= new Vector3(forceX, forceY, forceZ);
+        //line.SetPosition(1, startingPoint+endPoint);
+        //line.SetWidth(0.1f, 0.5f);
+        //line.useWorldSpace = true;
   
     }
+    
     
 }
