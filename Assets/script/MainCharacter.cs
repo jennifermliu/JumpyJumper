@@ -38,34 +38,43 @@ public class MainCharacter : MonoBehaviour
     // Update is called once per frame
     void Update () {
 
+
+        //Rotates character by rotationSpeed degrees per second with arrow keys
         if (Input.GetKey ("left")) {
             transform.Rotate(0, -Time.deltaTime*rotationSpeed, 0);
         } else if (Input.GetKey("right")) {
             transform.Rotate(0, Time.deltaTime*rotationSpeed, 0);
         }
 
+        //Calculates direction of jump using forward vector, and adding 'up' vector to launch upwards
         forceDirection = transform.forward + transform.up;
 
+        //Increases power of jump once space is held
         if (Input.GetKey ("space")){
             thrust += Time.deltaTime * thrustIncrement;
         }
 
+        //Calculates force of jump using direction force and power of jump
         forceMagnitude = forceDirection * thrust;
 
+
+        //Causes character to jump once space is released, resets canJump to prevent doubleJumps
         if (Input.GetKeyUp ("space") && canJump) {
             GetComponent<Rigidbody>().AddForce(forceMagnitude, ForceMode.Impulse);
             thrust = minThrust;
             canJump = false;
         }
 
-
+        //Calculates arrow's offset from player
         Vector3 offset = new Vector3(0f, 0.5f, 0f);
-        
+
+        //Generates arrow endpoints based on player direction and force magnitude
         Vector3 startingPoint = transform.position+offset;
         line.SetPosition(0, startingPoint);
         Vector3 endPoint = forceDirection + forceDirection * arrowScale * (thrust - minThrust);
         line.SetPosition(1, startingPoint+endPoint);
 
+        //Moves camera and resets successJump if player has made successful jump
         if (successJump){
             camera.transform.position = transform.position + cameraOffset;
             successJump = false;
@@ -75,13 +84,20 @@ public class MainCharacter : MonoBehaviour
     
     void OnCollisionEnter(Collision collision)
     {
+        //Registers as successful jump if player touches new block
+
         if (collision.gameObject.tag == "block")
         {
+
+            //Should register as success only when jumping on top of block, not sides - a bit buggy right now though
+
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top){
                 successJump = true;
                 canJump = true;
             }
         }
+
+        //Reloads the scene if player touches floor
 
         if (collision.gameObject.tag == "floor")
         {
