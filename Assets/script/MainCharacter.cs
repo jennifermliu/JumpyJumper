@@ -25,7 +25,7 @@ public class MainCharacter : MonoBehaviour
         line = GetComponent<LineRenderer>();
         camera = GameObject.Find("Main Camera");
         cameraOffset = camera.transform.position - transform.position;
-        rotationSpeed = 200f;
+        rotationSpeed = 100f;
         minThrust = 3f;
         canJump = true;
         thrust = minThrust;
@@ -71,7 +71,9 @@ public class MainCharacter : MonoBehaviour
         //Generates arrow endpoints based on player direction and force magnitude
         Vector3 startingPoint = transform.position+offset;
         line.SetPosition(0, startingPoint);
-        Vector3 endPoint = forceDirection + forceDirection * arrowScale * (thrust - minThrust);
+        //Vector3 endPoint = forceDirection + forceDirection * arrowScale * (thrust - minThrust);
+        
+        Vector3 endPoint = transform.forward  + transform.forward * arrowScale * (thrust - minThrust);
         line.SetPosition(1, startingPoint+endPoint);
 
         //Moves camera and resets successJump if player has made successful jump
