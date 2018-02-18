@@ -8,9 +8,11 @@ public class Block2 : MonoBehaviour {
 	// Use this for initialization
 	public int index;
 	public Boolean prev;
+	public int reward;
 	void Start ()
 	{
 		//index = -1;
+
 	}
 	
 	// Update is called once per frame
