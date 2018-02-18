@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Code.Menus;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -38,6 +39,11 @@ public class MainCharacter : MonoBehaviour
 
     private int currentscore = 0;
     private int blockscore = 0;
+    
+    //Register for Menu
+    public static UIManager UI { get; private set; }
+
+    public bool menushowed = false; 
 
 
     void Start()
@@ -60,6 +66,8 @@ public class MainCharacter : MonoBehaviour
 
         score = GameObject.FindGameObjectWithTag("score");
         score.GetComponent<Text>().text = "Score : " + currentscore;
+        
+        UI = new UIManager();
 
     }
 
@@ -96,6 +104,17 @@ public class MainCharacter : MonoBehaviour
             GetComponent<Rigidbody>().AddForce(forceMagnitude, ForceMode.Impulse);
             thrust = minThrust;
             canJump = false;
+        }
+        
+        //Show menu when pressing esc
+        if (Input.GetKeyDown("up"))
+        {
+            if (!menushowed)
+            {
+                UI.ShowBuildMenu();
+                menushowed = true;
+            }
+            
         }
 
         //Calculates arrow's offset from player
@@ -188,7 +207,8 @@ public class MainCharacter : MonoBehaviour
 
         if (collision.gameObject.tag == "floor")
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            UI.ShowBuildMenu();
         }
     }
 
