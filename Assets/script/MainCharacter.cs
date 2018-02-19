@@ -39,11 +39,12 @@ public class MainCharacter : MonoBehaviour
 
     private int currentscore = 0;
     private int blockscore = 0;
-    
+
     //Register for Menu
     public static UIManager UI { get; private set; }
 
-    public bool menushowed = false; 
+    public bool menushowed = false;
+    
 
 
     void Start()
@@ -66,7 +67,7 @@ public class MainCharacter : MonoBehaviour
 
         score = GameObject.FindGameObjectWithTag("score");
         score.GetComponent<Text>().text = "Score : " + currentscore;
-        
+
         UI = new UIManager();
 
     }
@@ -105,16 +106,21 @@ public class MainCharacter : MonoBehaviour
             thrust = minThrust;
             canJump = false;
         }
-        
+
         //Show menu when pressing esc
-        if (Input.GetKeyDown("up"))
+        if (Input.GetKeyDown("p"))
         {
             if (!menushowed)
             {
-                UI.ShowBuildMenu();
+                UI.ShowPauseMenu();
                 menushowed = true;
             }
             
+        }
+
+        if (GameObject.FindGameObjectsWithTag("menu") == null)
+        {
+            menushowed = false;
         }
 
         //Calculates arrow's offset from player
@@ -314,14 +320,14 @@ public class MainCharacter : MonoBehaviour
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.blue;
                 newblock.gameObject.transform.localScale -= new Vector3(1f, 0, 1f);
-               
+
 
             }
             else if (i == 1) //medium
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.red;
                 newblock.gameObject.transform.localScale -= new Vector3(0.5f, 0, 0.5f);
-                
+
             }
             else //large
             {
@@ -331,7 +337,7 @@ public class MainCharacter : MonoBehaviour
             Block2 newcylinder = newblock.GetComponent<Block2>();
             newcylinder.index = dir;
             newcylinder.prev = false;
-            blockscore = calculateScore(newpos,6-i, shape);
+            blockscore = calculateScore(newpos, 6 - i, shape);
             newcylinder.reward = blockscore;
         }
         else if (i >= 3 && i <= 5) //cubes
@@ -348,18 +354,18 @@ public class MainCharacter : MonoBehaviour
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.magenta;
                 newblock.gameObject.transform.localScale -= new Vector3(0.5f, 0, 0.5f);
-                
+
 
             }
             else //large
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.black;
-                
+
             }
             Block1 newcube = newblock.GetComponent<Block1>();
             newcube.index = dir;
             newcube.prev = false;
-            blockscore = calculateScore(newpos,6-i, shape);
+            blockscore = calculateScore(newpos, 6 - i, shape);
             newcube.reward = blockscore;
         }
     }
@@ -367,8 +373,9 @@ public class MainCharacter : MonoBehaviour
     private int calculateScore(Vector3 pos, int size, int shape)
     {
 
-        int distance = Mathf.FloorToInt((pos - GameObject.FindGameObjectWithTag("Player").transform.position).magnitude);
-         
-        return 1 + Mathf.FloorToInt(0.5f*size) + shape + Mathf.FloorToInt(0.05f*distance);
+        int distance =
+            Mathf.FloorToInt((pos - GameObject.FindGameObjectWithTag("Player").transform.position).magnitude);
+
+        return 1 + Mathf.FloorToInt(0.5f * size) + shape + Mathf.FloorToInt(0.05f * distance);
     }
 }

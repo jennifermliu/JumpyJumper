@@ -58,6 +58,7 @@
     <Compile Include="Assets\script\Floor.cs" />
     <Compile Include="Assets\script\MainCharacter.cs" />
     <Compile Include="Assets\script\MainController.cs" />
+    <Compile Include="Assets\script\PauseMenu.cs" />
     <Compile Include="Assets\script\UIManager.cs" />
     <None Include="Assets\floorShader.shader" />
     <Reference Include="UnityEngine.Analytics">

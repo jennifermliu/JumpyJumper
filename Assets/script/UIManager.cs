@@ -8,23 +8,42 @@ namespace Assets.Code.Menus
 		public static Transform Canvas { get; private set; }
 
 		private BuildMenu _build;
-		//private UpgradeMenu _upgrade;
+		private PauseMenu _pause;
 
-		public bool InMainMenu { get { return _build != null && _build.Showing; } }
+		public bool InMainMenu
+		{
+			get { return _build != null && _build.Showing; }
+		}
 
-		public UIManager () {
+		public UIManager()
+		{
 			Canvas = GameObject.Find("Canvas").transform; // There should only ever be one canvas
 		}
 
-		public void ShowBuildMenu () {
+		public void ShowBuildMenu()
+		{
 			_build = new BuildMenu();
 			_build.Show();
-			//Debug.Log("1");
+
 		}
 
-		public void HideBuildMenu () {
+		public void HideBuildMenu()
+		{
 			_build.Hide();
 			_build = null;
+		}
+		
+		public void ShowPauseMenu()
+		{
+			_pause = new PauseMenu();
+			_pause.Show();
+
+		}
+
+		public void HidePauseMenu()
+		{
+			_pause.Hide();
+			_pause = null;
 		}
 
 
@@ -37,7 +56,8 @@ namespace Assets.Code.Menus
 			/// <summary>
 			/// Show this menu
 			/// </summary>
-			public virtual void Show () {
+			public virtual void Show()
+			{
 				Showing = true;
 				Go.SetActive(true);
 			}
@@ -45,11 +65,11 @@ namespace Assets.Code.Menus
 			/// <summary>
 			/// Hide this menu
 			/// </summary>
-			public virtual void Hide () {
+			public virtual void Hide()
+			{
 				GameObject.Destroy(Go);
 				Showing = false;
 			}
 		}
 	}
-
 }
