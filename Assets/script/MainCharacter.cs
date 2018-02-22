@@ -16,6 +16,7 @@ public class MainCharacter : MonoBehaviour
     public LineRenderer line;
     public float thrust;
     public float minThrust;
+    private float maxThrust;
     public float rotationSpeed;
 
     private bool canJump;
@@ -47,14 +48,22 @@ public class MainCharacter : MonoBehaviour
 
     public const int num = 3;
 
+    public float smoothTime = 0.3F;
+    private Vector3 velocity = Vector3.zero;
+    public Vector3 cameraTargetPos;
+
+    private bool incrementThrust = true;
+
 
     void Start()
     {
         line = GetComponent<LineRenderer>();
         camera = GameObject.Find("Main Camera");
+        cameraTargetPos = camera.transform.position;
         cameraOffset = camera.transform.position - transform.position;
         rotationSpeed = 100f;
         minThrust = 3f;
+        maxThrust = 7f;
         canJump = true;
         thrust = minThrust;
         arrowScale = 0.4f;
@@ -64,7 +73,6 @@ public class MainCharacter : MonoBehaviour
         cylinder = Resources.Load("Block2");
         cube = Resources.Load("Block1");
         dist = 6f;
-
 
         score = GameObject.FindGameObjectWithTag("score");
         score.GetComponent<Text>().text = "Score : " + currentscore;
@@ -93,7 +101,21 @@ public class MainCharacter : MonoBehaviour
         //Increases power of jump once space is held
         if (Input.GetKey("space"))
         {
-            thrust += Time.deltaTime * thrustIncrement;
+            if (thrust > maxThrust){
+                incrementThrust = false;
+            }
+            else if (thrust < minThrust){
+                incrementThrust = true;
+            }
+
+            if (!incrementThrust)
+            {
+                thrust -= Time.deltaTime * thrustIncrement;
+            }
+            else if (incrementThrust)
+            {
+                thrust += Time.deltaTime * thrustIncrement;
+            }
         }
 
         //Calculates force of jump using direction force and power of jump
@@ -108,22 +130,23 @@ public class MainCharacter : MonoBehaviour
             canJump = false;
         }
 
-        //Show menu when pressing esc
-        if (Input.GetKeyDown("p"))
+        showMenu();
+        updateArrow();
+
+        //Moves camera and resets successJump if player has made successful jump
+        if (successJump)
         {
-            if (!menushowed)
-            {
-                UI.ShowPauseMenu();
-                menushowed = true;
-            }
-            
+            cameraTargetPos = transform.position + cameraOffset;
+            successJump = false;
+
         }
 
-        if (GameObject.FindGameObjectsWithTag("menu") == null)
-        {
-            menushowed = false;
-        }
+        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraTargetPos, ref velocity, smoothTime);
 
+    }
+
+    void updateArrow()
+    {
         //Calculates arrow's offset from player
         Vector3 offset = new Vector3(0f, 0.5f, 0f);
 
@@ -134,12 +157,24 @@ public class MainCharacter : MonoBehaviour
 
         Vector3 endPoint = transform.forward + transform.forward * arrowScale * (thrust - minThrust);
         line.SetPosition(1, startingPoint + endPoint);
+    }
 
-        //Moves camera and resets successJump if player has made successful jump
-        if (successJump)
+    void showMenu()
+    {
+        //Show menu when pressing esc
+        if (Input.GetKeyDown("p"))
         {
-            camera.transform.position = transform.position + cameraOffset;
-            successJump = false;
+            if (!menushowed)
+            {
+                UI.ShowPauseMenu();
+                menushowed = true;
+            }
+
+        }
+
+        if (GameObject.FindGameObjectsWithTag("menu") == null)
+        {
+            menushowed = false;
         }
 
     }
@@ -209,7 +244,9 @@ public class MainCharacter : MonoBehaviour
                         Destroy(oldblock);
                     }
                 }
-                DisplayNewBoxes(current);
+
+                DisplayNewBoxes();
+
             }
         }
 
@@ -217,8 +254,8 @@ public class MainCharacter : MonoBehaviour
 
         if (collision.gameObject.tag == "floor")
         {
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            UI.ShowBuildMenu();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //UI.ShowBuildMenu();
         }
     }
 
@@ -260,7 +297,7 @@ public class MainCharacter : MonoBehaviour
         return hitDirection;
     }
 
-    private void DisplayNewBoxes(int current)
+    private void DisplayNewBoxes()
     {
         Random rnd = new Random();
         //determine shape and size of each of the three new blocks
@@ -292,33 +329,7 @@ public class MainCharacter : MonoBehaviour
         positions[1].x += dist[1];
         //right
         positions[2].x -= dist[2];
-        
-        /*
-        if (current == 0) //up
-        {
-            GenerateABox(indices[0], positions[0], 0);
-            GenerateABox(indices[1], positions[2], 2);
-            GenerateABox(indices[2], positions[3], 3);
-        }
-        else if (current == 1) //down
-        {
-            GenerateABox(indices[0], positions[1], 1);
-            GenerateABox(indices[1], positions[2], 2);
-            GenerateABox(indices[2], positions[3], 3);
-        }
-        else if (current == 2) //left
-        {
-            GenerateABox(indices[0], positions[0], 0);
-            GenerateABox(indices[1], positions[1], 1);
-            GenerateABox(indices[2], positions[2], 2);
-        }
-        else if (current == 3) //right
-        {
-            GenerateABox(indices[0], positions[0], 0);
-            GenerateABox(indices[1], positions[1], 1);
-            GenerateABox(indices[2], positions[3], 3);
-        }
-        */
+
         //if -1, don't generate new boxes
         for(int i = 0; i<positions.Length; i++)
         {
