@@ -44,7 +44,8 @@ public class MainCharacter : MonoBehaviour
     public static UIManager UI { get; private set; }
 
     public bool menushowed = false;
-    
+
+    public const int num = 3;
 
 
     void Start()
@@ -194,6 +195,7 @@ public class MainCharacter : MonoBehaviour
                     //delete all blocks that are not colliding block or previous block
                     if (oldblock != collision.gameObject)
                     {
+                        /*
                         if (oldblock.GetComponent<Block1>() != null && oldblock.GetComponent<Block1>().prev == false)
                         {
                             Destroy(oldblock);
@@ -203,6 +205,8 @@ public class MainCharacter : MonoBehaviour
                         {
                             Destroy(oldblock);
                         }
+                        */
+                        Destroy(oldblock);
                     }
                 }
                 DisplayNewBoxes(current);
@@ -260,25 +264,36 @@ public class MainCharacter : MonoBehaviour
     {
         Random rnd = new Random();
         //determine shape and size of each of the three new blocks
-        int[] indices = new int[3];
-        indices[0] = rnd.Next(0, 6);
-        indices[1] = rnd.Next(0, 6);
-        indices[2] = rnd.Next(0, 6);
+        int[] indices = new int[num];
+        for (int i = 0; i < num; i++)
+        {
+            indices[i] = rnd.Next(0, 6);
+        }
+        
         //position array for 4 directions
-        Vector3[] positions = new Vector3[4];
+        Vector3[] positions = new Vector3[num];
         for (int i = 0; i < positions.Length; i++)
         {
             positions[i] = transform.position;
             positions[i].y = 1;
         }
+        Random distrnd = new Random();
+        int[] dist = new int[num];
+        for (int i = 0; i < num; i++)
+        {
+            dist[i] = distrnd.Next(4, 8);
+        }
+        
         //up
-        positions[0].z -= dist;
+        positions[0].z -= dist[0];
         //down
-        positions[1].z += dist;
+        //positions[1].z += dist[1];
         //left
-        positions[2].x += dist;
+        positions[1].x += dist[1];
         //right
-        positions[3].x -= dist;
+        positions[2].x -= dist[2];
+        
+        /*
         if (current == 0) //up
         {
             GenerateABox(indices[0], positions[0], 0);
@@ -303,7 +318,13 @@ public class MainCharacter : MonoBehaviour
             GenerateABox(indices[1], positions[1], 1);
             GenerateABox(indices[2], positions[3], 3);
         }
+        */
         //if -1, don't generate new boxes
+        for(int i = 0; i<positions.Length; i++)
+        {
+            GenerateABox(indices[i],positions[i],i);
+        }
+        
     }
 
     //generate a new box based on type represented by i, position represented by pos, 
