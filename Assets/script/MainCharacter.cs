@@ -33,30 +33,28 @@ public class MainCharacter : MonoBehaviour
 
     //variables for generating new boxes
     private Object cylinder;
-
     private Object cube;
     private float dist; //dist between new block and current block
 
     //Display scores
     private GameObject score;
-
     private int currentscore = 0;
     private int blockscore = 0;
 
     //Register for Menu
     public static UIManager UI { get; private set; }
-
     public bool menushowed = false;
-
-    public const int num = 3;
+    
+    public const int num = 3;//number of boxes generated 
 
     public float smoothTime = 0.3F;
     private Vector3 velocity = Vector3.zero;
     public Vector3 cameraTargetPos;
-
     private bool incrementThrust = true;
 
     public int blocknumber;//number of blocks jumped
+
+    public int scoreMultiplier;//multiplier when jumped to center
     
     void Start()
     {
@@ -83,12 +81,12 @@ public class MainCharacter : MonoBehaviour
         UI = new UIManager();
 
         blocknumber = 0;
+        scoreMultiplier = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-
         //Rotates character by rotationSpeed degrees per second with arrow keys
         if (Input.GetKey("left"))
         {
@@ -165,7 +163,7 @@ public class MainCharacter : MonoBehaviour
 
     void showMenu()
     {
-        //Show menu when pressing esc
+        //Show menu when pressing p
         if (Input.GetKeyDown("p"))
         {
             if (!menushowed)
@@ -179,25 +177,21 @@ public class MainCharacter : MonoBehaviour
         {
             menushowed = false;
         }
-
     }
 
     void OnCollisionEnter(Collision collision)
     {
         //Registers as successful jump if player touches new block
-
         if (collision.gameObject.tag == "block")
         {
-            blocknumber++;
-            Debug.Log(blocknumber);
+            blocknumber++;//increment number of block jumped
             //Should register as success only when jumping on top of block, not sides - a bit buggy right now though
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top)
             {
                 successJump = true;
                 canJump = true;
 
-
-                //variabel to keep tarck of direction of new block from the old block
+                //variabel to keep track of direction of new block from the old block
                 //0: up
                 //1: down
                 //2: left
@@ -213,6 +207,8 @@ public class MainCharacter : MonoBehaviour
                     c1.index = -1;
                     //mark prev to true to show that this is the previous block
                     c1.prev = true;
+                    if (isCenter(c1.transform.position)) scoreMultiplier++;
+                    else scoreMultiplier = 1;//reset score multiplier if player not in center
                 }
                 else if (c2 != null)
                 {
@@ -221,9 +217,12 @@ public class MainCharacter : MonoBehaviour
                     c2.index = -1;
                     //mark prev to true to show that this is the previous block
                     c2.prev = true;
+                    if (isCenter(c2.transform.position)) scoreMultiplier++;
+                    else scoreMultiplier = 1;
                 }
-
-
+                
+                blockscore *= scoreMultiplier;//multiply score of current block with multiplier
+                Debug.Log(blockscore);
                 //Increment scores 
                 currentscore += blockscore;
                 score.GetComponent<Text>().text = "Score : " + currentscore;
@@ -231,14 +230,13 @@ public class MainCharacter : MonoBehaviour
                 GameObject[] oldblocks = GameObject.FindGameObjectsWithTag("block");
                 foreach (GameObject oldblock in oldblocks)
                 {
-                    //delete all blocks that are not colliding block or previous block
+                    //delete all blocks that are not colliding block
                     if (oldblock != collision.gameObject)
                     {
                         Destroy(oldblock);
                     }
                 }
                 DisplayNewBoxes();
-
             }
         }
 
@@ -250,6 +248,16 @@ public class MainCharacter : MonoBehaviour
         }
     }
 
+    public bool isCenter(Vector3 blockpos)
+    {
+        Vector3 pos = transform.position;
+        if (pos.x >= blockpos.x - 0.5 && pos.x <= blockpos.x + 0.5 && pos.z >= blockpos.z - 0.5 && pos.z <= blockpos.z + 0.5)
+        {
+            return true;
+        }
+        return false;
+    }
+    
 
     private enum HitDirection
     {
@@ -288,14 +296,13 @@ public class MainCharacter : MonoBehaviour
 
     private void DisplayNewBoxes()
     {
-        Random rnd = new Random();
+        Random rnd = new Random();//type generator
         //determine shape and size of each of the three new blocks
         int[] indices = new int[num];
         for (int i = 0; i < num; i++)
         {
             indices[i] = rnd.Next(0, 6);
         }
-        
         //position array for 3 directions
         Vector3[] positions = new Vector3[num];
         for (int i = 0; i < positions.Length; i++)
@@ -303,7 +310,7 @@ public class MainCharacter : MonoBehaviour
             positions[i] = transform.position;
             positions[i].y = 1;
         }
-        Random distrnd = new Random();
+        Random distrnd = new Random();//distance generated
         int[] dist = new int[num];
         for (int i = 0; i < num; i++)
         {
@@ -318,8 +325,8 @@ public class MainCharacter : MonoBehaviour
         positions[1].x += dist[1];
         //right
         positions[2].x -= dist[2];
-
         //if -1, don't generate new boxes
+        
         for(int i = 0; i<positions.Length; i++)
         {
             GenerateABox(indices[i],positions[i],i);
@@ -331,7 +338,6 @@ public class MainCharacter : MonoBehaviour
     //and direction of new box relative to old box represented by dir
     private void GenerateABox(int i, Vector3 newpos, int dir)
     {
-
         int shape;
         Vector3 small = new Vector3(-1f, 0, -1f);
         Vector3 medium = new Vector3(-0.5f, 0, -0.5f);
@@ -406,7 +412,6 @@ public class MainCharacter : MonoBehaviour
 
     private int calculateScore(Vector3 pos, int size, int shape)
     {
-
         int distance =
             Mathf.FloorToInt((pos - GameObject.FindGameObjectWithTag("Player").transform.position).magnitude);
 

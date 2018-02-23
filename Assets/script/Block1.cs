@@ -6,12 +6,11 @@ using UnityEngine;
 public class Block1 : MonoBehaviour {
 
 	// Use this for initialization
-	
+
 	public int index;
 	public Boolean prev;
 	public int reward;
 	void Start () {
-		//index = -1;
 
 	}
 	

@@ -11,7 +11,6 @@ public class Block2 : MonoBehaviour {
 	public int reward;
 	void Start ()
 	{
-		//index = -1;
 
 	}
 	
