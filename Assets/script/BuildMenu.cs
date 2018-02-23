@@ -17,13 +17,8 @@ namespace Assets.Code.Menus
 			
 			public BuildMenu()
 			{
-
-				
-				
 				Go = (GameObject)Object.Instantiate(Resources.Load("Build Menu"),Canvas);
 				InitializeButtons();
-				
-
 			}
 
 			private void InitializeButtons()
@@ -43,9 +38,7 @@ namespace Assets.Code.Menus
 					Time.timeScale=1;			
 					Hide();				
 				});
-
-
-				
+		
 				_quit.onClick.AddListener(() =>
 				{
 					Debug.Log("quit");
@@ -54,13 +47,7 @@ namespace Assets.Code.Menus
 					UnityEditor.EditorApplication.isPlaying = false;
 			
 				});
-				
-				
-
-			}
-
-			
-			
+			}	
 
 		}	
 	}

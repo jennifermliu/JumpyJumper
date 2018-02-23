@@ -1,4 +1,5 @@
-﻿using Random=System.Random;
+﻿using System;
+using Random=System.Random;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public class MainCharacter : MonoBehaviour
 {
@@ -54,7 +56,8 @@ public class MainCharacter : MonoBehaviour
 
     private bool incrementThrust = true;
 
-
+    public int blocknumber;//number of blocks jumped
+    
     void Start()
     {
         line = GetComponent<LineRenderer>();
@@ -79,6 +82,7 @@ public class MainCharacter : MonoBehaviour
 
         UI = new UIManager();
 
+        blocknumber = 0;
     }
 
     // Update is called once per frame
@@ -169,7 +173,6 @@ public class MainCharacter : MonoBehaviour
                 UI.ShowPauseMenu();
                 menushowed = true;
             }
-
         }
 
         if (GameObject.FindGameObjectsWithTag("menu") == null)
@@ -185,7 +188,8 @@ public class MainCharacter : MonoBehaviour
 
         if (collision.gameObject.tag == "block")
         {
-
+            blocknumber++;
+            Debug.Log(blocknumber);
             //Should register as success only when jumping on top of block, not sides - a bit buggy right now though
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top)
             {
@@ -230,21 +234,9 @@ public class MainCharacter : MonoBehaviour
                     //delete all blocks that are not colliding block or previous block
                     if (oldblock != collision.gameObject)
                     {
-                        /*
-                        if (oldblock.GetComponent<Block1>() != null && oldblock.GetComponent<Block1>().prev == false)
-                        {
-                            Destroy(oldblock);
-                        }
-                        else if (oldblock.GetComponent<Block2>() != null &&
-                                 oldblock.GetComponent<Block2>().prev == false)
-                        {
-                            Destroy(oldblock);
-                        }
-                        */
                         Destroy(oldblock);
                     }
                 }
-
                 DisplayNewBoxes();
 
             }
@@ -255,7 +247,6 @@ public class MainCharacter : MonoBehaviour
         if (collision.gameObject.tag == "floor")
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            //UI.ShowBuildMenu();
         }
     }
 
@@ -281,10 +272,8 @@ public class MainCharacter : MonoBehaviour
 
         if (Physics.Raycast(MyRay, out MyRayHit))
         {
-
             if (MyRayHit.collider != null)
             {
-
                 Vector3 MyNormal = MyRayHit.normal;
                 MyNormal = MyRayHit.transform.TransformDirection(MyNormal);
 
@@ -307,7 +296,7 @@ public class MainCharacter : MonoBehaviour
             indices[i] = rnd.Next(0, 6);
         }
         
-        //position array for 4 directions
+        //position array for 3 directions
         Vector3[] positions = new Vector3[num];
         for (int i = 0; i < positions.Length; i++)
         {
@@ -318,7 +307,7 @@ public class MainCharacter : MonoBehaviour
         int[] dist = new int[num];
         for (int i = 0; i < num; i++)
         {
-            dist[i] = distrnd.Next(4, 8);
+            dist[i] = distrnd.Next(5, 8);
         }
         
         //up
@@ -344,6 +333,11 @@ public class MainCharacter : MonoBehaviour
     {
 
         int shape;
+        Vector3 small = new Vector3(-1f, 0, -1f);
+        Vector3 medium = new Vector3(-0.5f, 0, -0.5f);
+        Vector3 large = new Vector3(0f, 0, 0f);
+        float sizeMultiplier = getSizeMultiplier();
+       
         if (i >= 0 && i <= 2) //cylinders
         {
             shape = 1;
@@ -351,21 +345,20 @@ public class MainCharacter : MonoBehaviour
             if (i == 0) //small
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.blue;
-                newblock.gameObject.transform.localScale -= new Vector3(1f, 0, 1f);
-
-
+                newblock.gameObject.transform.localScale += small;
+                
             }
             else if (i == 1) //medium
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.red;
-                newblock.gameObject.transform.localScale -= new Vector3(0.5f, 0, 0.5f);
-
+                newblock.gameObject.transform.localScale += medium;
             }
             else //large
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.green;
-
+                newblock.gameObject.transform.localScale += large;
             }
+            newblock.gameObject.transform.localScale *= sizeMultiplier;
             Block2 newcylinder = newblock.GetComponent<Block2>();
             newcylinder.index = dir;
             newcylinder.prev = false;
@@ -379,27 +372,36 @@ public class MainCharacter : MonoBehaviour
             if (i == 3) //small
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.cyan;
-                newblock.gameObject.transform.localScale -= new Vector3(1f, 0, 1f);
-
+                newblock.gameObject.transform.localScale += small;
             }
             else if (i == 4) //medium
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.magenta;
-                newblock.gameObject.transform.localScale -= new Vector3(0.5f, 0, 0.5f);
-
-
+                newblock.gameObject.transform.localScale += medium;
             }
             else //large
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = Color.black;
-
+                newblock.gameObject.transform.localScale += large;
             }
+            newblock.gameObject.transform.localScale *= sizeMultiplier;
             Block1 newcube = newblock.GetComponent<Block1>();
             newcube.index = dir;
             newcube.prev = false;
             blockscore = calculateScore(newpos, 6 - i, shape);
             newcube.reward = blockscore;
         }
+    }
+
+    public float getSizeMultiplier()
+    {
+        int level = blocknumber / 5;
+        if (blocknumber < 40)
+        {
+            float multiplier = 1.0f - 0.1f * level;
+            return multiplier;
+        }
+        return 0.2f;
     }
 
     private int calculateScore(Vector3 pos, int size, int shape)
