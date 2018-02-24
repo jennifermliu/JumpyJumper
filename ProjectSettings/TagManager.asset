@@ -9,6 +9,8 @@ TagManager:
   - score
   - menu
   - startblock
+  - multiplierText
+  - powerUpText
   layers:
   - Default
   - TransparentFX

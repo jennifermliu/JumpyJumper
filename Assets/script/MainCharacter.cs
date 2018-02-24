@@ -34,12 +34,16 @@ public class MainCharacter : MonoBehaviour
     //variables for generating new boxes
     private Object cylinder;
     private Object cube;
+    private Object freezeBlock;
+    private Object multiBlock;
     private float dist; //dist between new block and current block
 
     //Display scores
     private GameObject score;
     private int currentscore = 0;
     private int blockscore = 0;
+
+    private Text powerUpText;
 
     //Register for Menu
     public static UIManager UI { get; private set; }
@@ -51,10 +55,15 @@ public class MainCharacter : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     public Vector3 cameraTargetPos;
     private bool incrementThrust = true;
+    public bool canMove = true; //used for the freeze block powerup
 
     public int blocknumber;//number of blocks jumped
+    private int pastBlockNumber = 0; //placeholder for keeping track of multiblock powerup
+    private int effectDuration = 3; //number of blocks powerup effects last for
 
     public int scoreMultiplier;//multiplier when jumped to center
+
+    private int scoreBlockMultiplier; //multiplier from score multiplier block
     
     void Start()
     {
@@ -73,19 +82,72 @@ public class MainCharacter : MonoBehaviour
 
         cylinder = Resources.Load("Block2");
         cube = Resources.Load("Block1");
+        freezeBlock = Resources.Load("FreezeBlock");
+        multiBlock = Resources.Load("MultiBlock");
+
         dist = 6f;
 
         score = GameObject.FindGameObjectWithTag("score");
         score.GetComponent<Text>().text = "Score : " + currentscore;
 
+        powerUpText = GameObject.Find("PowerUpText").GetComponent<Text>();
+
+
         UI = new UIManager();
 
         blocknumber = 0;
         scoreMultiplier = 1;
+        scoreBlockMultiplier = 1;
     }
 
     // Update is called once per frame
     void Update()
+    {
+        if (canMove)
+        {
+            //controls character movement and jumping
+            playerControls();
+        }
+
+        //displays arrow
+        updateArrow();
+
+        //displays powerUp text
+        updateText();
+
+        //menuTrigger
+        showMenu();
+
+
+        //Moves camera and resets successJump if player has made successful jump
+        if (successJump)
+        {
+            cameraTargetPos = transform.position + cameraOffset;
+            successJump = false;
+        }
+
+        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraTargetPos, ref velocity, smoothTime);
+    }
+
+    void updateText (){
+        
+        String text = "";
+
+        if (scoreBlockMultiplier == 2)
+        {
+            text += "Score Multiplier! (x2)";
+        }
+
+        if (!canMove)
+        {
+            text += "Player is frozen!!!";
+        }
+
+        powerUpText.text = text;
+
+    }
+
+    void playerControls()
     {
         //Rotates character by rotationSpeed degrees per second with arrow keys
         if (Input.GetKey("left"))
@@ -103,10 +165,12 @@ public class MainCharacter : MonoBehaviour
         //Increases power of jump once space is held
         if (Input.GetKey("space"))
         {
-            if (thrust > maxThrust){
+            if (thrust > maxThrust)
+            {
                 incrementThrust = false;
             }
-            else if (thrust < minThrust){
+            else if (thrust < minThrust)
+            {
                 incrementThrust = true;
             }
 
@@ -129,22 +193,7 @@ public class MainCharacter : MonoBehaviour
         {
             GetComponent<Rigidbody>().AddForce(forceMagnitude, ForceMode.Impulse);
             thrust = minThrust;
-            canJump = false;
         }
-
-        showMenu();
-        updateArrow();
-
-        //Moves camera and resets successJump if player has made successful jump
-        if (successJump)
-        {
-            cameraTargetPos = transform.position + cameraOffset;
-            successJump = false;
-
-        }
-
-        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraTargetPos, ref velocity, smoothTime);
-
     }
 
     void updateArrow()
@@ -200,6 +249,8 @@ public class MainCharacter : MonoBehaviour
                 //check if colliding block is cylinder or cube
                 Block1 c1 = collision.gameObject.GetComponent<Block1>();
                 Block2 c2 = collision.gameObject.GetComponent<Block2>();
+                MultiBlock m1 = collision.gameObject.GetComponent<MultiBlock>();
+
                 if (c1 != null)
                 {
                     blockscore = c1.reward;
@@ -220,9 +271,18 @@ public class MainCharacter : MonoBehaviour
                     if (isCenter(c2.transform.position)) scoreMultiplier++;
                     else scoreMultiplier = 1;
                 }
+                else if (m1 != null)
+                {
+                    scoreBlockMultiplier = 2;
+                    pastBlockNumber = blocknumber;
+
+                }
+
+                if (blocknumber > pastBlockNumber + effectDuration){
+                    scoreBlockMultiplier = 1;
+                }
                 
-                blockscore *= scoreMultiplier;//multiply score of current block with multiplier
-                Debug.Log(blockscore);
+                blockscore *= scoreMultiplier * scoreBlockMultiplier;//multiply score of current block with multiplier
                 //Increment scores 
                 currentscore += blockscore;
                 score.GetComponent<Text>().text = "Score : " + currentscore;
@@ -246,6 +306,10 @@ public class MainCharacter : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+    }
+
+    void OnCollisionExit(Collision collision){
+        canJump = false;
     }
 
     public bool isCenter(Vector3 blockpos)
@@ -301,7 +365,7 @@ public class MainCharacter : MonoBehaviour
         int[] indices = new int[num];
         for (int i = 0; i < num; i++)
         {
-            indices[i] = rnd.Next(0, 6);
+            indices[i] = rnd.Next(0, 8);
         }
         //position array for 3 directions
         Vector3[] positions = new Vector3[num];
@@ -339,8 +403,8 @@ public class MainCharacter : MonoBehaviour
     private void GenerateABox(int i, Vector3 newpos, int dir)
     {
         int shape;
-        Vector3 small = new Vector3(-1f, 0, -1f);
-        Vector3 medium = new Vector3(-0.5f, 0, -0.5f);
+        Vector3 small = new Vector3(-0.1f, 0, -0.1f);
+        Vector3 medium = new Vector3(-0.05f, 0, -0.05f);
         Vector3 large = new Vector3(0f, 0, 0f);
         float sizeMultiplier = getSizeMultiplier();
        
@@ -368,7 +432,7 @@ public class MainCharacter : MonoBehaviour
             Block2 newcylinder = newblock.GetComponent<Block2>();
             newcylinder.index = dir;
             newcylinder.prev = false;
-            blockscore = calculateScore(newpos, 6 - i, shape);
+            blockscore = calculateScore(newpos, 8 - i, shape);
             newcylinder.reward = blockscore;
         }
         else if (i >= 3 && i <= 5) //cubes
@@ -394,7 +458,26 @@ public class MainCharacter : MonoBehaviour
             Block1 newcube = newblock.GetComponent<Block1>();
             newcube.index = dir;
             newcube.prev = false;
-            blockscore = calculateScore(newpos, 6 - i, shape);
+            blockscore = calculateScore(newpos, 8 - i, shape);
+            newcube.reward = blockscore;
+        }
+        else if (i == 6){ //freezeBlock
+            shape = 1;
+            GameObject newblock = (GameObject)Instantiate(freezeBlock, newpos, Quaternion.identity);
+            FreezeBlock newcube = newblock.GetComponent<FreezeBlock>();
+            newcube.index = dir;
+            newcube.prev = false;
+            blockscore = calculateScore(newpos, 8 - i, shape);
+            newcube.reward = blockscore;
+        }
+        else if (i== 7){ //multiplierBlock
+            shape = 1;
+            GameObject newblock = (GameObject)Instantiate(multiBlock, newpos, Quaternion.identity);
+            MultiBlock newcube = newblock.GetComponent<MultiBlock>();
+            newblock.gameObject.transform.localScale *= sizeMultiplier;
+            newcube.index = dir;
+            newcube.prev = false;
+            blockscore = calculateScore(newpos, 8 - i, shape);
             newcube.reward = blockscore;
         }
     }
@@ -415,6 +498,8 @@ public class MainCharacter : MonoBehaviour
         int distance =
             Mathf.FloorToInt((pos - GameObject.FindGameObjectWithTag("Player").transform.position).magnitude);
 
-        return 1 + Mathf.FloorToInt(0.5f * size) + shape + Mathf.FloorToInt(0.05f * distance);
+        int score = 1 + Mathf.FloorToInt(0.5f * size) + shape + Mathf.FloorToInt(0.05f * distance);
+
+        return score;
     }
 }
