@@ -44,6 +44,7 @@ public class MainCharacter : MonoBehaviour
     private int blockscore = 0;
 
     private Text powerUpText;
+    private Text scoreText;
 
     //Register for Menu
     public static UIManager UI { get; private set; }
@@ -91,7 +92,7 @@ public class MainCharacter : MonoBehaviour
         score.GetComponent<Text>().text = "Score : " + currentscore;
 
         powerUpText = GameObject.Find("PowerUpText").GetComponent<Text>();
-
+        scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
 
         UI = new UIManager();
 
@@ -124,6 +125,9 @@ public class MainCharacter : MonoBehaviour
         {
             cameraTargetPos = transform.position + cameraOffset;
             successJump = false;
+            //scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
+            //scoreText.text = "+ " + blockscore;
+            //Destroy(scoreText,1f);
         }
 
         camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraTargetPos, ref velocity, smoothTime);
@@ -283,6 +287,11 @@ public class MainCharacter : MonoBehaviour
                 }
                 
                 blockscore *= scoreMultiplier * scoreBlockMultiplier;//multiply score of current block with multiplier
+
+                //Display block score earned
+                //Index for scoretext is 1
+                StartCoroutine(ShowMessage("+ " + blockscore, 1f));
+                
                 //Increment scores 
                 currentscore += blockscore;
                 score.GetComponent<Text>().text = "Score : " + currentscore;
@@ -501,5 +510,14 @@ public class MainCharacter : MonoBehaviour
         int score = 1 + Mathf.FloorToInt(0.5f * size) + shape + Mathf.FloorToInt(0.05f * distance);
 
         return score;
+    }
+    
+    IEnumerator ShowMessage (string message, float delay) {
+            scoreText.text = message;
+            scoreText.enabled = true;
+            yield return new WaitForSeconds(delay);
+            scoreText.enabled = false;
+        
+
     }
 }

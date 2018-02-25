@@ -18,7 +18,7 @@ public class Block1 : MonoBehaviour {
 
     private bool disappear = false;
     private float startTime = 0f;
-    public float targetTime = 2f;
+    private float targetTime = 7f;
     private float progress = 0f;
 
 

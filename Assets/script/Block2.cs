@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block2 : MonoBehaviour {
+public class Block2 : MonoBehaviour
+{
 
-	// Use this for initialization
-	public int index;
-	public Boolean prev;
-	public int reward;
+    // Use this for initialization
+    public int index;
+
+    public Boolean prev;
+    public int reward;
     private Color startColor;
     private Color endColor;
 
@@ -16,7 +18,7 @@ public class Block2 : MonoBehaviour {
 
     private bool disappear = false;
     private float startTime = 0f;
-    public float targetTime = 3f;
+    private float targetTime = 7f;
     private float progress = 0f;
 
 

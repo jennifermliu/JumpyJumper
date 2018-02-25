@@ -11,6 +11,9 @@ TagManager:
   - startblock
   - multiplierText
   - powerUpText
+  - resume
+  - restart
+  - quit
   layers:
   - Default
   - TransparentFX
