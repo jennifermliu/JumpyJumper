@@ -45,6 +45,7 @@ public class MainCharacter : MonoBehaviour
 
     private Text powerUpText;
     private Text scoreText;
+    private Text highestText;
 
     //Register for Menu
     public static UIManager UI { get; private set; }
@@ -65,6 +66,8 @@ public class MainCharacter : MonoBehaviour
     public int scoreMultiplier;//multiplier when jumped to center
 
     private int scoreBlockMultiplier; //multiplier from score multiplier block
+
+    private int highestscore;
     
     void Start()
     {
@@ -93,12 +96,21 @@ public class MainCharacter : MonoBehaviour
 
         powerUpText = GameObject.Find("PowerUpText").GetComponent<Text>();
         scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
+        highestText = GameObject.Find("HighestScore").GetComponent<Text>();
 
         UI = new UIManager();
+        highestscore = PlayerPrefs.GetInt("highestscore", 0);
 
         blocknumber = 0;
         scoreMultiplier = 1;
         scoreBlockMultiplier = 1;
+        //highestscore = 0;
+    }
+
+    void Awake()
+    {
+        //GameObject.DontDestroyOnLoad(highestText);
+        //highestscore = int.Parse(highestText.text);
     }
 
     // Update is called once per frame
@@ -119,18 +131,19 @@ public class MainCharacter : MonoBehaviour
         //menuTrigger
         showMenu();
 
+        //DontDestroyOnLoad(highestText);     
+
 
         //Moves camera and resets successJump if player has made successful jump
         if (successJump)
         {
             cameraTargetPos = transform.position + cameraOffset;
             successJump = false;
-            //scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
-            //scoreText.text = "+ " + blockscore;
-            //Destroy(scoreText,1f);
         }
 
         camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraTargetPos, ref velocity, smoothTime);
+        
+        
     }
 
     void updateText (){
@@ -290,7 +303,7 @@ public class MainCharacter : MonoBehaviour
 
                 //Display block score earned
                 //Index for scoretext is 1
-                StartCoroutine(ShowMessage("+ " + blockscore, 1f));
+                StartCoroutine(ShowMessage("+ " + blockscore, 1f, 1));
                 
                 //Increment scores 
                 currentscore += blockscore;
@@ -313,7 +326,23 @@ public class MainCharacter : MonoBehaviour
 
         if (collision.gameObject.tag == "floor")
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+            
+            //Index for highestscore is 2
+            //reloading the scene is done in StartCoroutine function
+
+            //Fetch the highestscore from the previous scene
+            //highestscore = PlayerPrefs.GetInt("highestscore", 0);
+            if (currentscore > highestscore)
+            {
+                highestscore = currentscore;
+                
+            }
+            PlayerPrefs.SetInt("highestscore", highestscore);
+            StartCoroutine(ShowMessage("Highest Score: " + highestscore, 3f, 2));
+
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
         }
     }
 
@@ -512,11 +541,23 @@ public class MainCharacter : MonoBehaviour
         return score;
     }
     
-    IEnumerator ShowMessage (string message, float delay) {
+    IEnumerator ShowMessage (string message, float delay, int index) {
+        if (index == 1)
+        {
             scoreText.text = message;
             scoreText.enabled = true;
             yield return new WaitForSeconds(delay);
             scoreText.enabled = false;
+        }
+        else if (index == 2)
+        {
+            highestText.text = message;
+            highestText.enabled = true;
+            yield return new WaitForSeconds(delay);
+            highestText.enabled = false;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
         
 
     }
