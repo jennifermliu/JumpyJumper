@@ -15,7 +15,7 @@ public class FreezeBlock : MonoBehaviour {
 
     private bool disappear = false;
     private float startTime = 0f;
-    public float targetTime = 3f;
+    private float targetTime = 10f;
     private float progress = 0f;
 
     private GameObject player;

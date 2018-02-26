@@ -15,7 +15,7 @@ public class MultiBlock : MonoBehaviour {
 
     private bool disappear = false;
     private float startTime = 0f;
-    public float targetTime = 2f;
+    private float targetTime = 10f;
     private float progress = 0f;
 
 
