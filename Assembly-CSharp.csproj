@@ -63,7 +63,6 @@
     <Compile Include="Assets\script\MultiBlock.cs" />
     <Compile Include="Assets\script\PauseMenu.cs" />
     <Compile Include="Assets\script\QuitOnClick.cs" />
-    <Compile Include="Assets\script\StartScene.cs" />
     <Compile Include="Assets\script\UIManager.cs" />
     <Compile Include="Assets\Unity Instruction\Scripts\ActiveStateToggler.cs" />
     <Compile Include="Assets\Unity Instruction\Scripts\ApplicationManager.cs" />

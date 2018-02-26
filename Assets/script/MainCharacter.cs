@@ -584,7 +584,7 @@ public class MainCharacter : MonoBehaviour
         int distance =
             Mathf.FloorToInt((pos - GameObject.FindGameObjectWithTag("Player").transform.position).magnitude);
 
-        int score = Mathf.FloorToInt(0.5f * size) + shape + Mathf.FloorToInt(0.05f * distance);
+        int score = 1 + Mathf.FloorToInt(0.2f * size) + shape + Mathf.FloorToInt(0.02f * distance);
 
         return score;
     }
