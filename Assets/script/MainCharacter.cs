@@ -46,6 +46,7 @@ public class MainCharacter : MonoBehaviour
     private Text powerUpText;
     private Text scoreText;
     private Text highestText;
+    private Text centerText;
 
     //Register for Menu
     public static UIManager UI { get; private set; }
@@ -67,7 +68,9 @@ public class MainCharacter : MonoBehaviour
 
     private int scoreBlockMultiplier; //multiplier from score multiplier block
 
-    private int highestscore;
+    private int highestscore; //highest score
+
+    private const float distFromCenter = 0.5f; //maximal distance from center to be considered as centered
     
     void Start()
     {
@@ -97,6 +100,7 @@ public class MainCharacter : MonoBehaviour
         powerUpText = GameObject.Find("PowerUpText").GetComponent<Text>();
         scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
         highestText = GameObject.Find("HighestScore").GetComponent<Text>();
+        centerText = GameObject.Find("CenterText").GetComponent<Text>();
 
         UI = new UIManager();
         highestscore = PlayerPrefs.GetInt("highestscore", 0);
@@ -267,6 +271,7 @@ public class MainCharacter : MonoBehaviour
                 Block1 c1 = collision.gameObject.GetComponent<Block1>();
                 Block2 c2 = collision.gameObject.GetComponent<Block2>();
                 MultiBlock m1 = collision.gameObject.GetComponent<MultiBlock>();
+                FreezeBlock f1 = collision.gameObject.GetComponent<FreezeBlock>();
 
                 if (c1 != null)
                 {
@@ -274,9 +279,17 @@ public class MainCharacter : MonoBehaviour
                     current = c1.index;
                     c1.index = -1;
                     //mark prev to true to show that this is the previous block
-                    c1.prev = true;
-                    if (isCenter(c1.transform.position)) scoreMultiplier++;
+                    
+                    if (isCenter(c1.transform.position))
+                    {
+                        scoreMultiplier++;
+                        if (!c1.prev)
+                        {
+                            StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
+                        }              
+                    }                    
                     else scoreMultiplier = 1;//reset score multiplier if player not in center
+                    c1.prev = true; 
                 }
                 else if (c2 != null)
                 {
@@ -284,14 +297,49 @@ public class MainCharacter : MonoBehaviour
                     current = c2.index;
                     c2.index = -1;
                     //mark prev to true to show that this is the previous block
-                    c2.prev = true;
-                    if (isCenter(c2.transform.position)) scoreMultiplier++;
+                    
+                    if (isCenter(c2.transform.position))
+                    {
+                        scoreMultiplier++;
+                        if (!c2.prev)
+                        {
+                            StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
+                        }                      
+                    }
                     else scoreMultiplier = 1;
+                    c2.prev = true;
                 }
                 else if (m1 != null)
                 {
                     scoreBlockMultiplier = 2;
+                    if (isCenter(m1.transform.position))
+                    {
+                        scoreMultiplier++;
+                        //index for centertext is 3
+                        if (!m1.prev)
+                        {
+                            StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
+                        }                       
+                    }
+                    else scoreMultiplier = 1;
+                    m1.prev = true;
                     pastBlockNumber = blocknumber;
+
+                }
+                
+                else if (f1 != null)
+                {
+                    if (isCenter(f1.transform.position))
+                    {
+                        scoreMultiplier++;
+                        if (!f1.prev)
+                        {
+                            StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
+                        }
+                        
+                    }
+                    else scoreMultiplier = 1;
+                    f1.prev = true;
 
                 }
 
@@ -353,7 +401,7 @@ public class MainCharacter : MonoBehaviour
     public bool isCenter(Vector3 blockpos)
     {
         Vector3 pos = transform.position;
-        if (pos.x >= blockpos.x - 0.5 && pos.x <= blockpos.x + 0.5 && pos.z >= blockpos.z - 0.5 && pos.z <= blockpos.z + 0.5)
+        if (pos.x >= blockpos.x - distFromCenter && pos.x <= blockpos.x + distFromCenter && pos.z >= blockpos.z - distFromCenter && pos.z <= blockpos.z + distFromCenter)
         {
             return true;
         }
@@ -536,7 +584,7 @@ public class MainCharacter : MonoBehaviour
         int distance =
             Mathf.FloorToInt((pos - GameObject.FindGameObjectWithTag("Player").transform.position).magnitude);
 
-        int score = 1 + Mathf.FloorToInt(0.5f * size) + shape + Mathf.FloorToInt(0.05f * distance);
+        int score = Mathf.FloorToInt(0.5f * size) + shape + Mathf.FloorToInt(0.05f * distance);
 
         return score;
     }
@@ -558,7 +606,14 @@ public class MainCharacter : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        
+        else if (index == 3)
+        {
+            centerText.text = message;
+            centerText.enabled = true;
+            yield return new WaitForSeconds(delay);
+            centerText.enabled = false;
+
+        }
 
     }
 }
