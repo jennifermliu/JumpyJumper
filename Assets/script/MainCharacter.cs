@@ -73,9 +73,13 @@ public class MainCharacter : MonoBehaviour
 
     private const float distFromCenter = 0.5f; //maximal distance from center to be considered as centered
     
-    private const float length = 5f;
+    private const float length = 5f;//length of each square
 
-    public GameObject destination;
+    public GameObject destination;//destiantion block
+
+    private const int numLevels = 5;
+    private Vector3[] goals= new Vector3[numLevels];//array for destiantion positions
+    private int goalIndex = 0;//current index in goals
     
     void Start()
     {
@@ -115,18 +119,20 @@ public class MainCharacter : MonoBehaviour
         scoreBlockMultiplier = 1;
         //highestscore = 0;
 
-        //Vector3 despos = new Vector3(4.3f, 1, -229);
-        Vector3 despos = new Vector3(4.3f, 1, 6);
+        Vector3 despos = new Vector3(4.3f, 1, 1);
         destination = (GameObject) Instantiate(cylinder, despos, Quaternion.identity);
         destination.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
         destination.gameObject.tag = "destination";
+        
 
-    }
-
-    void ResetDestination(Vector3 pos)
-    {
+        goals[0]=new Vector3(4.3f, 1f, -29f);
+        goals[1]=new Vector3(24.3f, 1f, 1f);
+        goals[2]=new Vector3(-10.7f, 1f, 6f);
+        goals[3]=new Vector3(-4.3f, 1f, -19f);
+        goals[4]=new Vector3(-4.3f, 1f, -229f);
         
     }
+
     
     void Awake()
     {
@@ -266,8 +272,29 @@ public class MainCharacter : MonoBehaviour
         }
     }
 
+    void ResetDestination(Vector3 pos)
+    {
+        GameObject newdestination =  (GameObject) Instantiate(cylinder, pos, Quaternion.identity);
+        newdestination.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+        newdestination.gameObject.tag = "destination";
+        destination.gameObject.tag = "block";
+        DisplayNewBoxes(destination.transform.position);
+        destination = newdestination;
+    }
+    
     void OnCollisionEnter(Collision collision)
     {
+        
+         
+        if (collision.gameObject.tag == "destination")
+        {
+            if (goalIndex < numLevels)
+            {
+                ResetDestination(goals[goalIndex]);
+                goalIndex++;
+            }  
+        }
+
         //Registers as successful jump if player touches new block
         if (collision.gameObject.tag == "block")
         {
@@ -386,13 +413,13 @@ public class MainCharacter : MonoBehaviour
                 DisplayNewBoxes(collision.transform.position);
             }
         }
-
+       
         //Reloads the scene if player touches floor
 
-        if (collision.gameObject.tag == "floor")
+        else if (collision.gameObject.tag == "floor")
         {
 
-            
+
             //Index for highestscore is 2
             //reloading the scene is done in StartCoroutine function
 
@@ -401,7 +428,7 @@ public class MainCharacter : MonoBehaviour
             if (currentscore > highestscore)
             {
                 highestscore = currentscore;
-                
+
             }
             PlayerPrefs.SetInt("highestscore", highestscore);
             StartCoroutine(ShowMessage("Highest Score: " + highestscore, 3f, 2));
