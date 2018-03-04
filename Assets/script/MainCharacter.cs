@@ -74,6 +74,8 @@ public class MainCharacter : MonoBehaviour
     private const float distFromCenter = 0.5f; //maximal distance from center to be considered as centered
     
     private const float length = 5f;
+
+    public GameObject destination;
     
     void Start()
     {
@@ -113,9 +115,18 @@ public class MainCharacter : MonoBehaviour
         scoreBlockMultiplier = 1;
         //highestscore = 0;
 
-        
+        Vector3 despos = new Vector3(4.3f, 1, -229);
+        destination = (GameObject) Instantiate(cylinder, despos, Quaternion.identity);
+        destination.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+        destination.gameObject.tag = "destination";
+
     }
 
+    void ResetDestination(Vector3 pos)
+    {
+        
+    }
+    
     void Awake()
     {
         //GameObject.DontDestroyOnLoad(highestText);
