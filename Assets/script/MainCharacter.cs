@@ -7,6 +7,7 @@ using Assets.Code.Menus;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
@@ -72,6 +73,8 @@ public class MainCharacter : MonoBehaviour
 
     private const float distFromCenter = 0.5f; //maximal distance from center to be considered as centered
     
+    private const float length = 5f;
+    
     void Start()
     {
         line = GetComponent<LineRenderer>();
@@ -109,6 +112,8 @@ public class MainCharacter : MonoBehaviour
         scoreMultiplier = 1;
         scoreBlockMultiplier = 1;
         //highestscore = 0;
+
+        
     }
 
     void Awake()
@@ -366,7 +371,7 @@ public class MainCharacter : MonoBehaviour
                         Destroy(oldblock);
                     }
                 }
-                DisplayNewBoxes();
+                DisplayNewBoxes(collision.transform.position);
             }
         }
 
@@ -444,7 +449,7 @@ public class MainCharacter : MonoBehaviour
         return hitDirection;
     }
 
-    private void DisplayNewBoxes()
+    private void DisplayNewBoxes(Vector3 currpos)
     {
         Random rnd = new Random();//type generator
         //determine shape and size of each of the three new blocks
@@ -457,24 +462,24 @@ public class MainCharacter : MonoBehaviour
         Vector3[] positions = new Vector3[num];
         for (int i = 0; i < positions.Length; i++)
         {
-            positions[i] = transform.position;
+            positions[i] = currpos;
             positions[i].y = 1;
         }
         Random distrnd = new Random();//distance generated
         int[] dist = new int[num];
         for (int i = 0; i < num; i++)
         {
-            dist[i] = distrnd.Next(5, 8);
+            dist[i] = distrnd.Next(1, 3);
         }
         
         //up
-        positions[0].z -= dist[0];
+        positions[0].z -= dist[0] * length;
         //down
-        positions[1].z += dist[1];
+        positions[1].z += dist[1] * length;
         //left
-        positions[2].x += dist[2];
+        positions[2].x += dist[2] * length;
         //right
-        positions[3].x -= dist[3];
+        positions[3].x -= dist[3] * length;
         //if -1, don't generate new boxes
         
         for(int i = 0; i<positions.Length; i++)

@@ -10,13 +10,13 @@ using System.Collections;
 public class Floor : MonoBehaviour
 {
 	// universal grid scale
-	public float gridScale = 0.5f; 
+	public float gridScale = 0.2f; 
  
 	// extents of the grid
-	public int minX = -15; 
-	public int minY = -15; 
-	public int maxX = 15; 
-	public int maxY = 15; 
+	public int minX = -50; 
+	public int minY = -50; 
+	public int maxX = 50; 
+	public int maxY = 50; 
  
 	// nudges the whole grid rel
 	public Vector3 gridOffset = Vector3.zero; 
