@@ -115,7 +115,8 @@ public class MainCharacter : MonoBehaviour
         scoreBlockMultiplier = 1;
         //highestscore = 0;
 
-        Vector3 despos = new Vector3(4.3f, 1, -229);
+        //Vector3 despos = new Vector3(4.3f, 1, -229);
+        Vector3 despos = new Vector3(4.3f, 1, 6);
         destination = (GameObject) Instantiate(cylinder, despos, Quaternion.identity);
         destination.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
         destination.gameObject.tag = "destination";
@@ -504,6 +505,11 @@ public class MainCharacter : MonoBehaviour
     //and direction of new box relative to old box represented by dir
     private void GenerateABox(int i, Vector3 newpos, int dir)
     {
+        //don't add block if there's a destination block here
+        if (destination.transform.position == newpos)
+        {
+            return;
+        }
         int shape;
         Vector3 small = new Vector3(-0.1f, 0, -0.1f);
         Vector3 medium = new Vector3(-0.05f, 0, -0.05f);
