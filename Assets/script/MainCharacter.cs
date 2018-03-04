@@ -52,7 +52,7 @@ public class MainCharacter : MonoBehaviour
     public static UIManager UI { get; private set; }
     public bool menushowed = false;
     
-    public const int num = 3;//number of boxes generated 
+    public const int num = 4;//number of boxes generated 
 
     public float smoothTime = 0.3F;
     private Vector3 velocity = Vector3.zero;
@@ -470,11 +470,11 @@ public class MainCharacter : MonoBehaviour
         //up
         positions[0].z -= dist[0];
         //down
-        //positions[1].z += dist[1];
+        positions[1].z += dist[1];
         //left
-        positions[1].x += dist[1];
+        positions[2].x += dist[2];
         //right
-        positions[2].x -= dist[2];
+        positions[3].x -= dist[3];
         //if -1, don't generate new boxes
         
         for(int i = 0; i<positions.Length; i++)
