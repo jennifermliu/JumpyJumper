@@ -15,6 +15,7 @@ TagManager:
   - restart
   - quit
   - destination
+  - blocksLeftText
   layers:
   - Default
   - TransparentFX
