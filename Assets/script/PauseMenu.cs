@@ -62,7 +62,8 @@ namespace Assets.Code.Menus
 				
 				_restart.onClick.AddListener(() =>
 				{				
-					SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+					//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+					SceneManager.LoadScene(0);
 					Time.timeScale=1;			
 					Hide();				
 				});

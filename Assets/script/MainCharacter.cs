@@ -55,6 +55,7 @@ public class MainCharacter : MonoBehaviour
     private Text highestText;
     private Text centerText;
     private Text blocksLeftText;
+    private Text timeLimitText;
 
     //Register for Menu
     public static UIManager UI { get; private set; }
@@ -92,6 +93,10 @@ public class MainCharacter : MonoBehaviour
     private Vector3 goalPos;
     private int goalIndex = 0;//current index in goals
     
+    //To display time limit
+    private float timeleft = 8;
+    
+    private float starttime;
     void Start()
     {
         line = GetComponent<LineRenderer>();
@@ -124,6 +129,7 @@ public class MainCharacter : MonoBehaviour
         highestText = GameObject.Find("HighestScore").GetComponent<Text>();
         centerText = GameObject.Find("CenterText").GetComponent<Text>();
         blocksLeftText = GameObject.Find("BlockLeftText").GetComponent<Text>();
+        timeLimitText = GameObject.Find("TimeLimitText").GetComponent<Text>();
 
         UI = new UIManager();
         highestscore = PlayerPrefs.GetInt("highestscore", 0);
@@ -237,6 +243,11 @@ public class MainCharacter : MonoBehaviour
 
         blocksLeftText.text = "Blocks Left: " + blocksLeft;
 
+        if (Mathf.RoundToInt(timeleft - Time.time + starttime) <= 0)
+        {
+            timeLimitText.text = "Time Limit: 0";
+        }
+        timeLimitText.text = "Time Limit: " + Mathf.RoundToInt(timeleft-Time.time+starttime);
 
     }
 
@@ -342,6 +353,10 @@ public class MainCharacter : MonoBehaviour
                 blocksLeft = blocksLeftArray[goalIndex];
                 goalIndex++;
             }  
+            
+            //show message index = 4
+            StartCoroutine(ShowMessage("Congrats! Go To Next Level!", 1f, 4));
+            
         }
 
         //Registers as successful jump if player touches new block
@@ -350,6 +365,8 @@ public class MainCharacter : MonoBehaviour
             blocknumber++;//increment number of block jumped
             blocksLeft--; //decrement blocks left
             //Should register as success only when jumping on top of block, not sides - a bit buggy right now though
+            starttime = Time.time;
+            timeLimitText.text = "Time Limit: " + timeleft;
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top)
             {
                 successJump = true;
@@ -445,7 +462,7 @@ public class MainCharacter : MonoBehaviour
 
                 //Display block score earned
                 //Index for scoretext is 1
-                StartCoroutine(ShowMessage("+ " + blockscore, 1f, 1));
+                StartCoroutine(ShowMessage("Current jump: " + blockscore, 1f, 1));
                 
                 //Increment scores 
                 currentscore += blockscore;
@@ -481,7 +498,7 @@ public class MainCharacter : MonoBehaviour
 
             }
             PlayerPrefs.SetInt("highestscore", highestscore);
-            StartCoroutine(ShowMessage("Highest Score: " + highestscore, 3f, 2));
+            StartCoroutine(ShowMessage("Highest Score: " + highestscore, 1f, 2));
 
             //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
@@ -706,6 +723,15 @@ public class MainCharacter : MonoBehaviour
         }
 
         else if (index == 3)
+        {
+            centerText.text = message;
+            centerText.enabled = true;
+            yield return new WaitForSeconds(delay);
+            centerText.enabled = false;
+
+        }
+        
+        else if (index == 4)
         {
             centerText.text = message;
             centerText.enabled = true;
