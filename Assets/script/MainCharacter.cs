@@ -31,6 +31,11 @@ public class MainCharacter : MonoBehaviour
     private bool successJump;
     private GameObject camera;
     private Vector3 cameraOffset;
+    private Vector3 zoomOffset;
+    private Vector3 maxZoomOffset = new Vector3(0f, 30f, 0f);
+    private Vector3 minZoomOffset = new Vector3(0f, 0f, 0f);
+    private Vector3 cameraRotation1 = new Vector3(60, 180, 0.1f);
+    private Vector3 cameraRotation2 = new Vector3(90, 180, 0.1f);
 
     //variables for generating new boxes
     private Object cylinder;
@@ -79,6 +84,8 @@ public class MainCharacter : MonoBehaviour
 
     private const int numLevels = 5;
     private Vector3[] goals= new Vector3[numLevels];//array for destiantion positions
+    private Vector3 despos;
+    private Vector3 goalPos;
     private int goalIndex = 0;//current index in goals
     
     void Start()
@@ -86,14 +93,15 @@ public class MainCharacter : MonoBehaviour
         line = GetComponent<LineRenderer>();
         camera = GameObject.Find("Main Camera");
         cameraTargetPos = camera.transform.position;
+        zoomOffset = new Vector3(0f, 0f, 0f);
         cameraOffset = camera.transform.position - transform.position;
         rotationSpeed = 100f;
         minThrust = 3f;
-        maxThrust = 7f;
+        maxThrust = 9f;
         canJump = true;
         thrust = minThrust;
         arrowScale = 0.4f;
-        thrustIncrement = 5f;
+        thrustIncrement = 7f;
         successJump = false;
 
         cylinder = Resources.Load("Block2");
@@ -119,7 +127,7 @@ public class MainCharacter : MonoBehaviour
         scoreBlockMultiplier = 1;
         //highestscore = 0;
 
-        Vector3 despos = new Vector3(4.3f, 1, 1);
+        despos = new Vector3(4.3f, 1, 1);
         destination = (GameObject) Instantiate(cylinder, despos, Quaternion.identity);
         destination.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
         destination.gameObject.tag = "destination";
@@ -168,11 +176,41 @@ public class MainCharacter : MonoBehaviour
             successJump = false;
         }
 
-        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraTargetPos, ref velocity, smoothTime);
-        
-        
+        zoomControls();
+
     }
 
+    void zoomControls(){
+
+        if (Input.GetKey("z"))
+        {
+
+            if (goalIndex == 0)
+            {
+                goalPos = despos;
+            }
+            else
+            {
+                goalPos = goals[goalIndex - 1];
+            }
+
+            Vector3 goalDiff = goalPos - transform.position;
+            Vector3 midpoint = transform.position + (goalPos - transform.position) / (2.0f);
+            Vector3 heightOffset = new Vector3(0f, (goalDiff).magnitude, 0f);
+            Vector3 zoomPos = midpoint + heightOffset * (1.5f);
+            Quaternion target = Quaternion.Euler(90f, 180f, 0f);
+            camera.transform.rotation = Quaternion.Lerp(camera.transform.rotation, target, Time.deltaTime * 3f);
+            camera.transform.position = Vector3.SmoothDamp(camera.transform.position, zoomPos, ref velocity, smoothTime);
+        }
+        else
+        {
+            Quaternion target = Quaternion.Euler(60f, 180f, 0f);
+            camera.transform.rotation = Quaternion.Lerp(camera.transform.rotation, target, Time.deltaTime * 3f);
+            camera.transform.position = Vector3.SmoothDamp(camera.transform.position, cameraTargetPos, ref velocity, smoothTime);
+        }
+
+
+    }
     void updateText (){
         
         String text = "";
