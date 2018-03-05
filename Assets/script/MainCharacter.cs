@@ -34,7 +34,7 @@ public class MainCharacter : MonoBehaviour
     private Vector3 zoomOffset;
     private Vector3 maxZoomOffset = new Vector3(0f, 30f, 0f);
     private Vector3 minZoomOffset = new Vector3(0f, 0f, 0f);
-    private Vector3 cameraRotation1 = new Vector3(60, 180, 0.1f);
+    private Vector3 cameraRotation1 = new Vector3(70, 180, 0.1f);
     private Vector3 cameraRotation2 = new Vector3(90, 180, 0.1f);
 
     //variables for generating new boxes
@@ -145,8 +145,8 @@ public class MainCharacter : MonoBehaviour
         
 
         goals[0]=new Vector3(4.3f, 1f, -29f);
-        goals[1]=new Vector3(24.3f, 1f, 1f);
-        goals[2]=new Vector3(-10.7f, 1f, 6f);
+        goals[1]=new Vector3(24.3f, 1f, -14f);
+        goals[2]=new Vector3(-10.7f, 1f, -9f);
         goals[3]=new Vector3(-4.3f, 1f, -19f);
         goals[4]=new Vector3(-4.3f, 1f, -229f);
 
@@ -497,6 +497,11 @@ public class MainCharacter : MonoBehaviour
                 highestscore = currentscore;
 
             }
+
+            if (blocksLeft <= 0){
+                StartCoroutine(ShowMessage("No Blocks Remaining ):", 1f, 3));
+            }
+
             PlayerPrefs.SetInt("highestscore", highestscore);
             StartCoroutine(ShowMessage("Highest Score: " + highestscore, 1f, 2));
 
