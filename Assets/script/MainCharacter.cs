@@ -101,7 +101,7 @@ public class MainCharacter : MonoBehaviour
         canJump = true;
         thrust = minThrust;
         arrowScale = 0.4f;
-        thrustIncrement = 7f;
+        thrustIncrement = 8f;
         successJump = false;
 
         cylinder = Resources.Load("Block2");
@@ -587,18 +587,18 @@ public class MainCharacter : MonoBehaviour
             GameObject newblock = (GameObject) Instantiate(cylinder, newpos, Quaternion.identity);
             if (i == 0) //small
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = Color.blue;
-                newblock.gameObject.transform.localScale += small;
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.25f, 0.1f, 0.05f,1f);
+                newblock.gameObject.transform.localScale += new Vector3(-0.2f, 0, -0.2f);
                 
             }
             else if (i == 1) //medium
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = Color.red;
-                newblock.gameObject.transform.localScale += medium;
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.55f, 0.4f, 0.25f,1f);
+                newblock.gameObject.transform.localScale += new Vector3(-0.1f, 0, -0.1f);
             }
             else //large
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = Color.green;
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.85f, 0.5f, 0.35f,1f);
                 newblock.gameObject.transform.localScale += large;
             }
             newblock.gameObject.transform.localScale *= sizeMultiplier;
@@ -614,17 +614,17 @@ public class MainCharacter : MonoBehaviour
             GameObject newblock = (GameObject) Instantiate(cube, newpos, Quaternion.identity);
             if (i == 3) //small
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = Color.cyan;
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.25f, 0.1f, 0.05f,1f);
                 newblock.gameObject.transform.localScale += small;
             }
             else if (i == 4) //medium
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = Color.magenta;
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.55f, 0.4f, 0.25f,1f);
                 newblock.gameObject.transform.localScale += medium;
             }
             else //large
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = Color.black;
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.85f, 0.5f, 0.35f,1f);
                 newblock.gameObject.transform.localScale += large;
             }
             newblock.gameObject.transform.localScale *= sizeMultiplier;

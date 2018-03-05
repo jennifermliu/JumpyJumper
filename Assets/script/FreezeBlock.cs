@@ -22,7 +22,7 @@ public class FreezeBlock : MonoBehaviour {
     private Renderer playerRenderer;
     private MainCharacter playerController;
 
-    public float revertTime = 1.2f;
+    private float revertTime = 2.5f;
 
     public Color freezeColor = new Color(1F, 1F, 1F, 1F);
     private Color originalColor;
