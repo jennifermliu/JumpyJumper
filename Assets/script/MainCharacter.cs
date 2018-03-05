@@ -42,6 +42,7 @@ public class MainCharacter : MonoBehaviour
     private Object cube;
     private Object freezeBlock;
     private Object multiBlock;
+    private Object destBlock;
     private float dist; //dist between new block and current block
 
     //Display scores
@@ -53,6 +54,7 @@ public class MainCharacter : MonoBehaviour
     private Text scoreText;
     private Text highestText;
     private Text centerText;
+    private Text blocksLeftText;
 
     //Register for Menu
     public static UIManager UI { get; private set; }
@@ -84,6 +86,8 @@ public class MainCharacter : MonoBehaviour
 
     private const int numLevels = 5;
     private Vector3[] goals= new Vector3[numLevels];//array for destiantion positions
+    private int[] blocksLeftArray;
+    private int blocksLeft = 5;
     private Vector3 despos;
     private Vector3 goalPos;
     private int goalIndex = 0;//current index in goals
@@ -108,6 +112,7 @@ public class MainCharacter : MonoBehaviour
         cube = Resources.Load("Block1");
         freezeBlock = Resources.Load("FreezeBlock");
         multiBlock = Resources.Load("MultiBlock");
+        destBlock = Resources.Load("TargetBlock");
 
         dist = 6f;
 
@@ -118,6 +123,7 @@ public class MainCharacter : MonoBehaviour
         scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
         highestText = GameObject.Find("HighestScore").GetComponent<Text>();
         centerText = GameObject.Find("CenterText").GetComponent<Text>();
+        blocksLeftText = GameObject.Find("BlockLeftText").GetComponent<Text>();
 
         UI = new UIManager();
         highestscore = PlayerPrefs.GetInt("highestscore", 0);
@@ -128,8 +134,7 @@ public class MainCharacter : MonoBehaviour
         //highestscore = 0;
 
         despos = new Vector3(4.3f, 1, 1);
-        destination = (GameObject) Instantiate(cylinder, despos, Quaternion.identity);
-        destination.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+        destination = (GameObject) Instantiate(destBlock, despos, Quaternion.identity);
         destination.gameObject.tag = "destination";
         
 
@@ -138,6 +143,8 @@ public class MainCharacter : MonoBehaviour
         goals[2]=new Vector3(-10.7f, 1f, 6f);
         goals[3]=new Vector3(-4.3f, 1f, -19f);
         goals[4]=new Vector3(-4.3f, 1f, -229f);
+
+        blocksLeftArray = new int[] { 7, 10, 13, 16, 19, 22 };
         
     }
 
@@ -168,13 +175,13 @@ public class MainCharacter : MonoBehaviour
 
         //DontDestroyOnLoad(highestText);     
 
-
         //Moves camera and resets successJump if player has made successful jump
         if (successJump)
         {
             cameraTargetPos = transform.position + cameraOffset;
             successJump = false;
         }
+
 
         zoomControls();
 
@@ -226,6 +233,10 @@ public class MainCharacter : MonoBehaviour
         }
 
         powerUpText.text = text;
+
+
+        blocksLeftText.text = "Blocks Left: " + blocksLeft;
+
 
     }
 
@@ -312,8 +323,7 @@ public class MainCharacter : MonoBehaviour
 
     void ResetDestination(Vector3 pos)
     {
-        GameObject newdestination =  (GameObject) Instantiate(cylinder, pos, Quaternion.identity);
-        newdestination.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+        GameObject newdestination =  (GameObject) Instantiate(destBlock, pos, Quaternion.identity);
         newdestination.gameObject.tag = "destination";
         destination.gameObject.tag = "block";
         DisplayNewBoxes(destination.transform.position);
@@ -329,6 +339,7 @@ public class MainCharacter : MonoBehaviour
             if (goalIndex < numLevels)
             {
                 ResetDestination(goals[goalIndex]);
+                blocksLeft = blocksLeftArray[goalIndex];
                 goalIndex++;
             }  
         }
@@ -337,6 +348,7 @@ public class MainCharacter : MonoBehaviour
         if (collision.gameObject.tag == "block")
         {
             blocknumber++;//increment number of block jumped
+            blocksLeft--; //decrement blocks left
             //Should register as success only when jumping on top of block, not sides - a bit buggy right now though
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top)
             {
@@ -452,9 +464,9 @@ public class MainCharacter : MonoBehaviour
             }
         }
        
-        //Reloads the scene if player touches floor
+        //Reloads the scene if player touches floor or has no more blocks left
 
-        else if (collision.gameObject.tag == "floor")
+        if (collision.gameObject.tag == "floor" || blocksLeft <= 0)
         {
 
 
@@ -587,18 +599,18 @@ public class MainCharacter : MonoBehaviour
             GameObject newblock = (GameObject) Instantiate(cylinder, newpos, Quaternion.identity);
             if (i == 0) //small
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.25f, 0.1f, 0.05f,1f);
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.15f, 0.1f, 0.15f,1f);
                 newblock.gameObject.transform.localScale += new Vector3(-0.2f, 0, -0.2f);
                 
             }
             else if (i == 1) //medium
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.55f, 0.4f, 0.25f,1f);
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.65f, 0.4f, 0.65f,1f);
                 newblock.gameObject.transform.localScale += new Vector3(-0.1f, 0, -0.1f);
             }
             else //large
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.85f, 0.5f, 0.35f,1f);
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.85f, 0.6f, 0.85f,1f);
                 newblock.gameObject.transform.localScale += large;
             }
             newblock.gameObject.transform.localScale *= sizeMultiplier;
@@ -614,17 +626,17 @@ public class MainCharacter : MonoBehaviour
             GameObject newblock = (GameObject) Instantiate(cube, newpos, Quaternion.identity);
             if (i == 3) //small
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.25f, 0.1f, 0.05f,1f);
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.15f, 0.1f, 0.15f,1f);
                 newblock.gameObject.transform.localScale += small;
             }
             else if (i == 4) //medium
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.55f, 0.4f, 0.25f,1f);
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.65f, 0.4f, 0.65f,1f);
                 newblock.gameObject.transform.localScale += medium;
             }
             else //large
             {
-                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.85f, 0.5f, 0.35f,1f);
+                newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.85f, 0.6f, 0.85f,1f);
                 newblock.gameObject.transform.localScale += large;
             }
             newblock.gameObject.transform.localScale *= sizeMultiplier;
