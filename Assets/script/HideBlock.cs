@@ -23,7 +23,7 @@ public class HideBlock : MonoBehaviour
     private LineRenderer playerLineRenderer;
     private MainCharacter playerController;
 
-    private float revertTime = 4f;
+    private float revertTime = 5f;
 
 
     void Start()
@@ -53,6 +53,7 @@ public class HideBlock : MonoBehaviour
 
         if (progress >= targetTime)
         {
+            revert();
             Destroy(gameObject);
         }
 
