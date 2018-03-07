@@ -108,11 +108,11 @@ public class MainCharacter : MonoBehaviour
         cameraOffset = camera.transform.position - transform.position;
         rotationSpeed = 100f;
         minThrust = 3f;
-        maxThrust = 9f;
+        maxThrust = 8f;
         canJump = true;
         thrust = minThrust;
         arrowScale = 0.4f;
-        thrustIncrement = 8f;
+        thrustIncrement = 7f;
         successJump = false;
 
         cylinder = Resources.Load("Block2");
@@ -135,7 +135,12 @@ public class MainCharacter : MonoBehaviour
         //timeLimitText = GameObject.Find("TimeLimitText").GetComponent<Text>();
 
         UI = new UIManager();
+
+        //Get rid of line below to make high score persistent across sessions.
+        PlayerPrefs.SetInt("highestscore", 0);
+
         highestscore = PlayerPrefs.GetInt("highestscore", 0);
+
 
         blocknumber = 0;
         scoreMultiplier = 1;
@@ -148,12 +153,12 @@ public class MainCharacter : MonoBehaviour
         
 
         goals[0]=new Vector3(4.3f, 1f, -29f);
-        goals[1]=new Vector3(24.3f, 1f, -14f);
-        goals[2]=new Vector3(-10.7f, 1f, -9f);
-        goals[3]=new Vector3(-4.3f, 1f, -19f);
-        goals[4]=new Vector3(-4.3f, 1f, -104f);
+        goals[1]=new Vector3(24.3f, 1f, -19f);
+        goals[2]=new Vector3(-10.7f, 1f, 6f);
+        goals[3]=new Vector3(-4.3f, 1f, -24f);
+        goals[4]=new Vector3(19.3f, 1f, -64f);
 
-        blocksLeftArray = new int[] { 7, 10, 13, 16, 19, 22 };
+        blocksLeftArray = new int[] { 7, 10, 12, 14, 16, 18 };
         
     }
 
@@ -532,7 +537,9 @@ public class MainCharacter : MonoBehaviour
             }
 
             PlayerPrefs.SetInt("highestscore", highestscore);
-            StartCoroutine(ShowMessage("Highest Score: " + highestscore, 1f, 2));
+            String scoreMessage = "Your Score: " + currentscore;
+            scoreMessage += "\nHighest Score: " + highestscore;
+            StartCoroutine(ShowMessage(scoreMessage, 1f, 2));
 
             //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
