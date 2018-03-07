@@ -53,7 +53,7 @@ public class HideBlock : MonoBehaviour
 
         if (progress >= targetTime)
         {
-            revert();
+            
             Destroy(gameObject);
         }
 
@@ -75,6 +75,11 @@ public class HideBlock : MonoBehaviour
             Invoke("revert", revertTime);
 
         }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        revert();
     }
 
     void revert()
