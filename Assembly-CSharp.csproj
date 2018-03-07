@@ -56,6 +56,7 @@
      <Compile Include="Assets\script\BuildMenu.cs" />
      <Compile Include="Assets\script\Floor.cs" />
      <Compile Include="Assets\script\FreezeBlock.cs" />
+     <Compile Include="Assets\script\HideBlock.cs" />
      <Compile Include="Assets\script\LoadSceneOnClick.cs" />
      <Compile Include="Assets\script\MainCharacter.cs" />
      <Compile Include="Assets\script\MainController.cs" />

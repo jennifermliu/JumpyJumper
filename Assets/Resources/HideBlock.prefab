@@ -9,46 +9,46 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1761339963115298}
+  m_RootGameObject: {fileID: 1393568348691904}
   m_IsPrefabParent: 1
---- !u!1 &1761339963115298
+--- !u!1 &1393568348691904
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4092967921820142}
-  - component: {fileID: 33276454458352468}
-  - component: {fileID: 23361654361256890}
-  - component: {fileID: 64363290429677996}
-  - component: {fileID: 114003629513999886}
+  - component: {fileID: 4018147865793094}
+  - component: {fileID: 33159529663917224}
+  - component: {fileID: 23809475612541468}
+  - component: {fileID: 64560083850132474}
+  - component: {fileID: 114552963287806724}
   m_Layer: 0
-  m_Name: FreezeBlock
+  m_Name: HideBlock
   m_TagString: block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4092967921820142
+--- !u!4 &4018147865793094
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1761339963115298}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.7, y: 1, z: 14.93}
-  m_LocalScale: {x: 0.03, y: 0.02, z: 0.035}
+  m_GameObject: {fileID: 1393568348691904}
+  m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.25, y: 1.56, z: 11.54}
+  m_LocalScale: {x: 1.5, y: 1, z: 1.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23361654361256890
+--- !u!23 &23809475612541468
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1761339963115298}
+  m_GameObject: {fileID: 1393568348691904}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -57,7 +57,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: d63ea312d731feb40a761ba3661e5f3b, type: 2}
+  - {fileID: 2100000, guid: 88faa5a91a671444399e4dd91c9dc1da, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,39 +77,39 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33276454458352468
+--- !u!33 &33159529663917224
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1761339963115298}
-  m_Mesh: {fileID: 4300002, guid: 2ff26ffb0577d944f9035a5518c06709, type: 3}
---- !u!64 &64363290429677996
+  m_GameObject: {fileID: 1393568348691904}
+  m_Mesh: {fileID: 4300000, guid: 283c2a73be2ff274abe5a6c1e1ee3a48, type: 3}
+--- !u!64 &64560083850132474
 MeshCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1761339963115298}
-  m_Material: {fileID: 0}
+  m_GameObject: {fileID: 1393568348691904}
+  m_Material: {fileID: 13400000, guid: 82c91d63cf1e34487a0fd81b4460ae8f, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Convex: 0
   m_CookingOptions: 14
   m_SkinWidth: 0.01
-  m_Mesh: {fileID: 4300002, guid: 2ff26ffb0577d944f9035a5518c06709, type: 3}
---- !u!114 &114003629513999886
+  m_Mesh: {fileID: 4300000, guid: 283c2a73be2ff274abe5a6c1e1ee3a48, type: 3}
+--- !u!114 &114552963287806724
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1761339963115298}
+  m_GameObject: {fileID: 1393568348691904}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d64a29237e584b77b5fc105cac415ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 860bb65af86a246879775276b76f80d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
   prev: 0
-  reward: 3
-  freezeColor: {r: 0.55785036, g: 0.5784855, b: 0.9852941, a: 1}
+  reward: 4
+  freezeColor: {r: 1, g: 1, b: 1, a: 1}

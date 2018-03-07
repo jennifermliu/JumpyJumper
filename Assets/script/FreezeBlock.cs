@@ -5,7 +5,7 @@ using UnityEngine;
 public class FreezeBlock : MonoBehaviour {
 
     public int index;
-    public bool prev;
+    public bool prev = false;
     public int reward;
 
     private Color startColor;
@@ -19,7 +19,9 @@ public class FreezeBlock : MonoBehaviour {
     private float progress = 0f;
 
     private GameObject player;
+    private GameObject playerSphere;
     private Renderer playerRenderer;
+    private Renderer playerRendererSphere;
     private MainCharacter playerController;
 
     private float revertTime = 5f;
@@ -37,8 +39,10 @@ public class FreezeBlock : MonoBehaviour {
         endColor.a = 0;
 
         player = GameObject.Find("MainCharacter");
+        playerSphere = GameObject.Find("Sphere");
         playerController = player.GetComponent<MainCharacter>();
         playerRenderer = player.GetComponent<Renderer>();
+        playerRendererSphere = playerSphere.GetComponent<Renderer>();
 
         originalColor = playerRenderer.material.color;
 
@@ -72,6 +76,7 @@ public class FreezeBlock : MonoBehaviour {
             renderer.material.color = endColor;
 
             playerRenderer.material.color = freezeColor;
+            playerRendererSphere.material.color = freezeColor;
             playerController.canMove = false;
 
             Invoke("revert", revertTime);
@@ -83,6 +88,7 @@ public class FreezeBlock : MonoBehaviour {
     {
         playerController.canMove = true;
         playerRenderer.material.color = originalColor;
+        playerRendererSphere.material.color = originalColor;
     }
 
 }

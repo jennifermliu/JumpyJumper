@@ -1,25 +1,29 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block2 : MonoBehaviour
+public class HideBlock : MonoBehaviour
 {
 
-    // Use this for initialization
     public int index;
-
     public bool prev = false;
     public int reward;
-    private Color startColor;
-    private Color endColor;
 
     private Renderer renderer;
 
+    private Color startColor;
+    private Color endColor;
+
     private bool disappear = false;
     private float startTime = 0f;
-    private float targetTime = 7f;
+    private float targetTime = 10f;
     private float progress = 0f;
+
+    private GameObject player;
+    private LineRenderer playerLineRenderer;
+    private MainCharacter playerController;
+
+    private float revertTime = 4f;
 
 
     void Start()
@@ -30,6 +34,10 @@ public class Block2 : MonoBehaviour
         startColor = renderer.material.color;
         endColor = startColor;
         endColor.a = 0;
+
+        player = GameObject.Find("MainCharacter");
+        playerController = player.GetComponent<MainCharacter>();
+        playerLineRenderer = player.GetComponent<LineRenderer>();
 
     }
 
@@ -55,11 +63,23 @@ public class Block2 : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
+
             startTime = Time.time;
             disappear = true;
             renderer.material.color = endColor;
-        }
 
+            playerLineRenderer.enabled = false;
+            playerController.canSeeLine = false;
+
+            Invoke("revert", revertTime);
+
+        }
+    }
+
+    void revert()
+    {
+        playerLineRenderer.enabled = true;
+        playerController.canSeeLine = true;
     }
 
 }

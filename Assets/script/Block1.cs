@@ -8,7 +8,7 @@ public class Block1 : MonoBehaviour {
 	// Use this for initialization
 
 	public int index;
-	public Boolean prev;
+    public bool prev = false;
 	public int reward;
 
     private Color startColor;

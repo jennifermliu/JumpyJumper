@@ -43,6 +43,7 @@ public class MainCharacter : MonoBehaviour
     private Object freezeBlock;
     private Object multiBlock;
     private Object destBlock;
+    private Object hideBlock;
     private float dist; //dist between new block and current block
 
     //Display scores
@@ -68,6 +69,7 @@ public class MainCharacter : MonoBehaviour
     public Vector3 cameraTargetPos;
     private bool incrementThrust = true;
     public bool canMove = true; //used for the freeze block powerup
+    public bool canSeeLine = true; //used for the freeze block powerup
 
     public int blocknumber;//number of blocks jumped
     private int pastBlockNumber = 0; //placeholder for keeping track of multiblock powerup
@@ -118,6 +120,7 @@ public class MainCharacter : MonoBehaviour
         freezeBlock = Resources.Load("FreezeBlock");
         multiBlock = Resources.Load("MultiBlock");
         destBlock = Resources.Load("TargetBlock");
+        hideBlock = Resources.Load("HideBlock");
 
         dist = 6f;
 
@@ -129,7 +132,7 @@ public class MainCharacter : MonoBehaviour
         highestText = GameObject.Find("HighestScore").GetComponent<Text>();
         centerText = GameObject.Find("CenterText").GetComponent<Text>();
         blocksLeftText = GameObject.Find("BlockLeftText").GetComponent<Text>();
-        timeLimitText = GameObject.Find("TimeLimitText").GetComponent<Text>();
+        //timeLimitText = GameObject.Find("TimeLimitText").GetComponent<Text>();
 
         UI = new UIManager();
         highestscore = PlayerPrefs.GetInt("highestscore", 0);
@@ -148,7 +151,7 @@ public class MainCharacter : MonoBehaviour
         goals[1]=new Vector3(24.3f, 1f, -14f);
         goals[2]=new Vector3(-10.7f, 1f, -9f);
         goals[3]=new Vector3(-4.3f, 1f, -19f);
-        goals[4]=new Vector3(-4.3f, 1f, -229f);
+        goals[4]=new Vector3(-4.3f, 1f, -104f);
 
         blocksLeftArray = new int[] { 7, 10, 13, 16, 19, 22 };
         
@@ -230,24 +233,29 @@ public class MainCharacter : MonoBehaviour
 
         if (scoreBlockMultiplier == 2)
         {
-            text += "Score Multiplier! (x2)";
+            text += "Score Multiplier! (x2)\n";
         }
 
         if (!canMove)
         {
-            text += "Player is frozen!!!";
+            text += "Player is frozen!!!\n";
+        }
+
+        if (!canSeeLine)
+        {
+            text += "Targeting is disabled!\n";
         }
 
         powerUpText.text = text;
 
 
-        blocksLeftText.text = "Blocks Left: " + blocksLeft;
+        blocksLeftText.text = "Jumps Left: " + blocksLeft;
 
-        if (Mathf.RoundToInt(timeleft - Time.time + starttime) <= 0)
-        {
-            timeLimitText.text = "Time Limit: 0";
-        }
-        timeLimitText.text = "Time Limit: " + Mathf.RoundToInt(timeleft-Time.time+starttime);
+        //if (Mathf.RoundToInt(timeleft - Time.time + starttime) <= 0)
+        //{
+        //    timeLimitText.text = "Time Limit: 0";
+        //}
+        //timeLimitText.text = "Time Limit: " + Mathf.RoundToInt(timeleft-Time.time+starttime);
 
     }
 
@@ -355,34 +363,43 @@ public class MainCharacter : MonoBehaviour
             }  
             
             //show message index = 4
-            StartCoroutine(ShowMessage("Congrats! Go To Next Level!", 1f, 4));
+            StartCoroutine(ShowMessage("Congrats!\nFind the next target by pressing 'z'", 2f, 4));
             
         }
 
+        //Get block components
+        Block1 c1 = collision.gameObject.GetComponent<Block1>();
+        Block2 c2 = collision.gameObject.GetComponent<Block2>();
+        MultiBlock m1 = collision.gameObject.GetComponent<MultiBlock>();
+        FreezeBlock f1 = collision.gameObject.GetComponent<FreezeBlock>();
+        HideBlock h1 = collision.gameObject.GetComponent<HideBlock>();
+
+        bool isPreviousBlock = false;
+
+        if ((c1 != null && c1.prev) || (c2!= null && c2.prev) || (m1!=null && m1.prev) || (f1!=null && f1.prev) || (h1!=null && h1.prev)){
+            isPreviousBlock = true;
+            canJump = true;
+        }
+
         //Registers as successful jump if player touches new block
-        if (collision.gameObject.tag == "block")
+        if (collision.gameObject.tag == "block" && !isPreviousBlock)
         {
             blocknumber++;//increment number of block jumped
             blocksLeft--; //decrement blocks left
-            //Should register as success only when jumping on top of block, not sides - a bit buggy right now though
             starttime = Time.time;
-            timeLimitText.text = "Time Limit: " + timeleft;
+            //timeLimitText.text = "Time Limit: " + timeleft;
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top)
             {
                 successJump = true;
                 canJump = true;
 
-                //variabel to keep track of direction of new block from the old block
+                //variable to keep track of direction of new block from the old block
                 //0: up
                 //1: down
                 //2: left
                 //3: right
                 int current = -1;
                 //check if colliding block is cylinder or cube
-                Block1 c1 = collision.gameObject.GetComponent<Block1>();
-                Block2 c2 = collision.gameObject.GetComponent<Block2>();
-                MultiBlock m1 = collision.gameObject.GetComponent<MultiBlock>();
-                FreezeBlock f1 = collision.gameObject.GetComponent<FreezeBlock>();
 
                 if (c1 != null)
                 {
@@ -437,7 +454,6 @@ public class MainCharacter : MonoBehaviour
                     pastBlockNumber = blocknumber;
 
                 }
-                
                 else if (f1 != null)
                 {
                     if (isCenter(f1.transform.position))
@@ -451,7 +467,20 @@ public class MainCharacter : MonoBehaviour
                     }
                     else scoreMultiplier = 1;
                     f1.prev = true;
+                }
+                else if (h1 != null)
+                {
+                    if (isCenter(h1.transform.position))
+                    {
+                        scoreMultiplier++;
+                        if (!h1.prev)
+                        {
+                            StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
+                        }
 
+                    }
+                    else scoreMultiplier = 1;
+                    h1.prev = true;
                 }
 
                 if (blocknumber > pastBlockNumber + effectDuration){
@@ -506,7 +535,6 @@ public class MainCharacter : MonoBehaviour
             StartCoroutine(ShowMessage("Highest Score: " + highestscore, 1f, 2));
 
             //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
         }
     }
 
@@ -567,7 +595,7 @@ public class MainCharacter : MonoBehaviour
         int[] indices = new int[num];
         for (int i = 0; i < num; i++)
         {
-            indices[i] = rnd.Next(0, 8);
+            indices[i] = rnd.Next(0, 9);
         }
         //position array for 3 directions
         Vector3[] positions = new Vector3[num];
@@ -605,10 +633,11 @@ public class MainCharacter : MonoBehaviour
     private void GenerateABox(int i, Vector3 newpos, int dir)
     {
         //don't add block if there's a destination block here
-        if (destination.transform.position == newpos)
+        if ((destination.transform.position - newpos).magnitude < 2f)
         {
             return;
         }
+
         int shape;
         Vector3 small = new Vector3(-0.1f, 0, -0.1f);
         Vector3 medium = new Vector3(-0.05f, 0, -0.05f);
@@ -639,7 +668,7 @@ public class MainCharacter : MonoBehaviour
             Block2 newcylinder = newblock.GetComponent<Block2>();
             newcylinder.index = dir;
             newcylinder.prev = false;
-            blockscore = calculateScore(newpos, 8 - i, shape);
+            blockscore = calculateScore(newpos, 9 - i, shape);
             newcylinder.reward = blockscore;
         }
         else if (i >= 3 && i <= 5) //cubes
@@ -665,7 +694,7 @@ public class MainCharacter : MonoBehaviour
             Block1 newcube = newblock.GetComponent<Block1>();
             newcube.index = dir;
             newcube.prev = false;
-            blockscore = calculateScore(newpos, 8 - i, shape);
+            blockscore = calculateScore(newpos, 9 - i, shape);
             newcube.reward = blockscore;
         }
         else if (i == 6){ //freezeBlock
@@ -674,7 +703,7 @@ public class MainCharacter : MonoBehaviour
             FreezeBlock newcube = newblock.GetComponent<FreezeBlock>();
             newcube.index = dir;
             newcube.prev = false;
-            blockscore = calculateScore(newpos, 8 - i, shape);
+            blockscore = calculateScore(newpos, 9 - i, shape);
             newcube.reward = blockscore;
         }
         else if (i== 7){ //multiplierBlock
@@ -684,7 +713,17 @@ public class MainCharacter : MonoBehaviour
             newblock.gameObject.transform.localScale *= sizeMultiplier;
             newcube.index = dir;
             newcube.prev = false;
-            blockscore = calculateScore(newpos, 8 - i, shape);
+            blockscore = calculateScore(newpos, 9 - i, shape);
+            newcube.reward = blockscore;
+        }else if (i == 8)
+        { //hideBlock
+            shape = 1;
+            GameObject newblock = (GameObject)Instantiate(hideBlock, newpos, Quaternion.identity);
+            HideBlock newcube = newblock.GetComponent<HideBlock>();
+            newblock.gameObject.transform.localScale *= sizeMultiplier;
+            newcube.index = dir;
+            newcube.prev = false;
+            blockscore = calculateScore(newpos, 9 - i, shape);
             newcube.reward = blockscore;
         }
     }

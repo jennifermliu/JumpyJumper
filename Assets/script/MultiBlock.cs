@@ -5,7 +5,7 @@ using UnityEngine;
 public class MultiBlock : MonoBehaviour {
 
     public int index;
-    public bool prev;
+    public bool prev = false;
     public int reward;
 
     private Color startColor;
