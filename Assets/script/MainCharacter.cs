@@ -136,11 +136,12 @@ public class MainCharacter : MonoBehaviour
 
         UI = new UIManager();
 
-        //Get rid of line below to make high score persistent across sessions.
-        PlayerPrefs.SetInt("highestscore", 0);
+
 
         highestscore = PlayerPrefs.GetInt("highestscore", 0);
 
+        //Get rid of line below to make high score persistent across sessions.
+        PlayerPrefs.SetInt("highestscore", 0);
 
         blocknumber = 0;
         scoreMultiplier = 1;
