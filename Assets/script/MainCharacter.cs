@@ -458,7 +458,6 @@ public class MainCharacter : MonoBehaviour
                     else scoreMultiplier = 1;
                     m1.prev = true;
                     pastBlockNumber = blocknumber;
-
                 }
                 else if (f1 != null)
                 {
@@ -469,7 +468,6 @@ public class MainCharacter : MonoBehaviour
                         {
                             StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
                         }
-                        
                     }
                     else scoreMultiplier = 1;
                     f1.prev = true;
@@ -483,7 +481,6 @@ public class MainCharacter : MonoBehaviour
                         {
                             StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
                         }
-
                     }
                     else scoreMultiplier = 1;
                     h1.prev = true;
