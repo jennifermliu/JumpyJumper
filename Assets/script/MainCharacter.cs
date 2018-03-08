@@ -354,6 +354,33 @@ public class MainCharacter : MonoBehaviour
         DisplayNewBoxes(destination.transform.position);
         destination = newdestination;
     }
+
+    int calculateNumberOfJumpsLeft(Vector3 currpos, Vector3 newpos)
+    {
+        float xdiff = Math.Abs(currpos.x - newpos.x);
+        float zdiff = Math.Abs(currpos.z - newpos.z);
+        int xunit = (int) (xdiff / length);
+        int zunit = (int) (zdiff / length);
+        return xunit+zunit;
+    }
+
+    Vector3 getNewDestinationPos(Vector3 currpos)
+    {
+        Random distrnd = new Random();//distance generated
+        int xunit=distrnd.Next(-5, 5);
+        while (Math.Abs(xunit) < 3)
+        {
+            xunit=distrnd.Next(-5, 5);
+        }
+        int zunit=distrnd.Next(-5, 5);
+        while (Math.Abs(zunit) < 3)
+        {
+            zunit=distrnd.Next(-5, 5);
+        }
+        float newx = currpos.x + xunit * length;
+        float newz = currpos.z + zunit * length;
+        return new Vector3(newx,currpos.y,newz);
+    }
     
     void OnCollisionEnter(Collision collision)
     {
@@ -361,12 +388,10 @@ public class MainCharacter : MonoBehaviour
          
         if (collision.gameObject.tag == "destination")
         {
-            if (goalIndex < numLevels)
-            {
-                ResetDestination(goals[goalIndex]);
-                blocksLeft = blocksLeftArray[goalIndex];
-                goalIndex++;
-            }  
+            Vector3 newpos = getNewDestinationPos(collision.gameObject.transform.position);
+            ResetDestination(newpos);
+            blocksLeft = calculateNumberOfJumpsLeft(collision.gameObject.transform.position, destination.transform.position);
+            goalIndex++;
             
             //show message index = 4
             StartCoroutine(ShowMessage("Congrats!\nFind the next target by pressing 'z'", 2f, 4));
