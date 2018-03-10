@@ -326,17 +326,17 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'For every level, you should jump to the destination block in specified
-    number of jumps. Otherwise, you die
+  m_Text: 'For every level, you need to jump to the target block in specified number
+    of jumps. Otherwise, you die.
 
 
-    Left/Right Arrow Keys to control the jumping direction
+    Left/Right Arrow Keys to control the direction bar.
 
 
     Space Key to control the jumping distance
 
 
-    Key Z to zoom in/out to visualize the position of the destination block
+    Key Z to zoom in to visualize the position of the target  block
 
 
     Key P to show the menu
