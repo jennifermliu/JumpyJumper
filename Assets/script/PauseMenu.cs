@@ -27,6 +27,7 @@ namespace Assets.Code.Menus
 			private void InitializeButtons()
 			{
 				var _resume = GameObject.FindGameObjectWithTag("resume").GetComponent<Button>();
+				var _instruction = GameObject.FindGameObjectWithTag("instruction").GetComponent<Button>();
 				var _restart = GameObject.FindGameObjectWithTag("restart").GetComponent<Button>();
 				var _quit = GameObject.FindGameObjectWithTag("quit").GetComponent<Button>();
 				//var _resume = GameObject.Find("Resume").GetComponent<Button>();
@@ -34,7 +35,7 @@ namespace Assets.Code.Menus
 				//var _quit = GameObject.Find("Quit").GetComponent<Button>();
 				
 
-				if (_resume !=null || _restart!=null || _quit!=null)
+				if (_resume !=null || _restart!=null || _quit!=null || _instruction!=null)
 				{
 					Time.timeScale = 0;
 					/*
@@ -47,6 +48,21 @@ namespace Assets.Code.Menus
 
 				_resume.onClick.AddListener(() =>
 				{
+					Time.timeScale=1;
+					/*
+					Object[] objects = GameObject.FindObjectsOfType (typeof(GameObject));
+					foreach (GameObject go in objects) {
+						go.SendMessage ("OnResumeGame", SendMessageOptions.DontRequireReceiver);
+					}
+					//GameObject.Destroy(Go,0);
+					*/
+					
+					Hide();				
+				});
+				
+				_instruction.onClick.AddListener(() =>
+				{
+					SceneManager.LoadScene(2);
 					Time.timeScale=1;
 					/*
 					Object[] objects = GameObject.FindObjectsOfType (typeof(GameObject));

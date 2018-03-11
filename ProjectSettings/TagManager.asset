@@ -18,6 +18,7 @@ TagManager:
   - blocksLeftText
   - HighestText
   - TimeLimit
+  - instruction
   layers:
   - Default
   - TransparentFX
