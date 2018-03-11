@@ -291,8 +291,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -5}
-  m_SizeDelta: {x: 500, y: 200}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 500, y: 230}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &222043162
 MonoBehaviour:
@@ -330,7 +330,10 @@ MonoBehaviour:
     of jumps. Otherwise, you die.
 
 
-    Left/Right Arrow Keys to control the direction bar.
+    Try to jump to the center of next block consecutively to get more points.
+
+
+    Left/Right Arrow Keys to control the direction bar
 
 
     Space Key to control the jumping distance
@@ -588,7 +591,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -100, y: 110}
+  m_AnchoredPosition: {x: -101, y: 126}
   m_SizeDelta: {x: 300, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &435827719
@@ -1193,7 +1196,7 @@ RectTransform:
   m_AnchorMin: {x: 0.25, y: 1}
   m_AnchorMax: {x: 0.75, y: 1}
   m_AnchoredPosition: {x: 0, y: -180}
-  m_SizeDelta: {x: 200, y: 340}
+  m_SizeDelta: {x: 200, y: 330}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1343229222
 MonoBehaviour:
@@ -1479,7 +1482,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -170, y: 145}
+  m_AnchoredPosition: {x: -170, y: 160}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1859867420

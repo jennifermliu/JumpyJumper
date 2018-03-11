@@ -206,7 +206,7 @@ public class MainCharacter : MonoBehaviour
 
         if (Input.GetKey("z"))
         {
-
+/*
             if (goalIndex == 0)
             {
                 goalPos = despos;
@@ -215,7 +215,9 @@ public class MainCharacter : MonoBehaviour
             {
                 goalPos = goals[goalIndex - 1];
             }
-
+*/
+            goalPos = GameObject.FindGameObjectWithTag("destination").transform.position;
+            
             Vector3 goalDiff = goalPos - transform.position;
             Vector3 midpoint = transform.position + (goalPos - transform.position) / (2.0f);
             Vector3 heightOffset = new Vector3(0f, (goalDiff).magnitude, 0f);
