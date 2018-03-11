@@ -61,8 +61,8 @@ public class MainCharacter : MonoBehaviour
     //Register for Menu
     public static UIManager UI { get; private set; }
     public bool menushowed = false;
-    
-    public const int num = 4;//number of boxes generated 
+
+    public const int num = 4;//number of boxes generated
 
     public float smoothTime = 0.3F;
     private Vector3 velocity = Vector3.zero;
@@ -82,7 +82,7 @@ public class MainCharacter : MonoBehaviour
     private int highestscore; //highest score
 
     private const float distFromCenter = 0.5f; //maximal distance from center to be considered as centered
-    
+
     private const float length = 5f;//length of each square
 
     public GameObject destination;//destiantion block
@@ -94,10 +94,10 @@ public class MainCharacter : MonoBehaviour
     private Vector3 despos;
     private Vector3 goalPos;
     private int goalIndex = 0;//current index in goals
-    
+
     //To display time limit
     private float timeleft = 8;
-    
+
     private float starttime;
     void Start()
     {
@@ -109,7 +109,7 @@ public class MainCharacter : MonoBehaviour
         cameraOffset = camera.transform.position - transform.position;
         rotationSpeed = 100f;
         minThrust = 3f;
-        maxThrust = 8f;
+        maxThrust = 10f;
         canJump = true;
         thrust = minThrust;
         arrowScale = 0.4f;
@@ -154,7 +154,7 @@ public class MainCharacter : MonoBehaviour
         despos = new Vector3(4.3f, 1, 1);
         destination = (GameObject) Instantiate(destBlock, despos, Quaternion.identity);
         destination.gameObject.tag = "destination";
-        
+
 
         goals[0]=new Vector3(4.3f, 1f, -29f);
         goals[1]=new Vector3(24.3f, 1f, -19f);
@@ -163,10 +163,10 @@ public class MainCharacter : MonoBehaviour
         goals[4]=new Vector3(19.3f, 1f, -64f);
 
         blocksLeftArray = new int[] { 7, 10, 12, 14, 16, 18 };
-        
+
     }
 
-    
+
     void Awake()
     {
         //GameObject.DontDestroyOnLoad(highestText);
@@ -192,7 +192,7 @@ public class MainCharacter : MonoBehaviour
         //menuTrigger
         showMenu();
 
-        //DontDestroyOnLoad(highestText);     
+        //DontDestroyOnLoad(highestText);
 
         //Moves camera and resets successJump if player has made successful jump
         if (successJump)
@@ -221,7 +221,7 @@ public class MainCharacter : MonoBehaviour
             }
 */
             goalPos = GameObject.FindGameObjectWithTag("destination").transform.position;
-            
+
             Vector3 goalDiff = goalPos - transform.position;
             Vector3 midpoint = transform.position + (goalPos - transform.position) / (2.0f);
             Vector3 heightOffset = new Vector3(0f, (goalDiff).magnitude, 0f);
@@ -240,7 +240,7 @@ public class MainCharacter : MonoBehaviour
 
     }
     void updateText (){
-        
+
         String text = "";
 
         if (scoreBlockMultiplier == 2)
@@ -275,8 +275,8 @@ public class MainCharacter : MonoBehaviour
             timeLimitText.text = "Time Limit: " + Mathf.RoundToInt(timeleft-Time.time+starttime);
         }
 
-        
-        
+
+
 
 
     }
@@ -397,21 +397,21 @@ public class MainCharacter : MonoBehaviour
         float newz = currpos.z + zunit * length;
         return new Vector3(newx,currpos.y,newz);
     }
-    
+
     void OnCollisionEnter(Collision collision)
     {
-        
-         
+
+
         if (collision.gameObject.tag == "destination")
         {
             Vector3 newpos = getNewDestinationPos(collision.gameObject.transform.position);
             ResetDestination(newpos);
             blocksLeft = calculateNumberOfJumpsLeft(collision.gameObject.transform.position, destination.transform.position);
             goalIndex++;
-            
+
             //show message index = 4
             StartCoroutine(ShowMessage("Congrats!\nFind the next target by pressing 'z'", 2f, 4));
-            
+
         }
 
         //Get block components
@@ -433,10 +433,10 @@ public class MainCharacter : MonoBehaviour
         {
             blocknumber++;//increment number of block jumped
             blocksLeft--; //decrement blocks left
-            
+
             starttime = Time.time;
             timeLimitText.text = "Time Limit: " + timeleft;
-            
+
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top)
             {
                 successJump = true;
@@ -456,17 +456,17 @@ public class MainCharacter : MonoBehaviour
                     current = c1.index;
                     c1.index = -1;
                     //mark prev to true to show that this is the previous block
-                    
+
                     if (isCenter(c1.transform.position))
                     {
                         scoreMultiplier++;
                         if (!c1.prev)
                         {
                             StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
-                        }              
-                    }                    
+                        }
+                    }
                     else scoreMultiplier = 1;//reset score multiplier if player not in center
-                    c1.prev = true; 
+                    c1.prev = true;
                 }
                 else if (c2 != null)
                 {
@@ -474,14 +474,14 @@ public class MainCharacter : MonoBehaviour
                     current = c2.index;
                     c2.index = -1;
                     //mark prev to true to show that this is the previous block
-                    
+
                     if (isCenter(c2.transform.position))
                     {
                         scoreMultiplier++;
                         if (!c2.prev)
                         {
                             StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
-                        }                      
+                        }
                     }
                     else scoreMultiplier = 1;
                     c2.prev = true;
@@ -496,7 +496,7 @@ public class MainCharacter : MonoBehaviour
                         if (!m1.prev)
                         {
                             StartCoroutine(ShowMessage("Jump To The Center (X2)", 1f, 3));
-                        }                       
+                        }
                     }
                     else scoreMultiplier = 1;
                     m1.prev = true;
@@ -532,14 +532,14 @@ public class MainCharacter : MonoBehaviour
                 if (blocknumber > pastBlockNumber + effectDuration){
                     scoreBlockMultiplier = 1;
                 }
-                
+
                 blockscore *= scoreMultiplier * scoreBlockMultiplier;//multiply score of current block with multiplier
 
                 //Display block score earned
                 //Index for scoretext is 1
                 StartCoroutine(ShowMessage("Current jump: " + blockscore, 1f, 1));
-                
-                //Increment scores 
+
+                //Increment scores
                 currentscore += blockscore;
                 score.GetComponent<Text>().text = "Score : " + currentscore;
 
@@ -555,7 +555,7 @@ public class MainCharacter : MonoBehaviour
                 DisplayNewBoxes(collision.transform.position);
             }
         }
-       
+
         //Reloads the scene if player touches floor or has no more blocks left
 
         if (collision.gameObject.tag == "floor" || blocksLeft <= 0)
@@ -599,7 +599,7 @@ public class MainCharacter : MonoBehaviour
         }
         return false;
     }
-    
+
 
     private enum HitDirection
     {
@@ -658,7 +658,7 @@ public class MainCharacter : MonoBehaviour
         {
             dist[i] = distrnd.Next(1, 3);
         }
-        
+
         //up
         positions[0].z -= dist[0] * length;
         //down
@@ -668,15 +668,15 @@ public class MainCharacter : MonoBehaviour
         //right
         positions[3].x -= dist[3] * length;
         //if -1, don't generate new boxes
-        
+
         for(int i = 0; i<positions.Length; i++)
         {
             GenerateABox(indices[i],positions[i],i);
         }
-        
+
     }
 
-    //generate a new box based on type represented by i, position represented by pos, 
+    //generate a new box based on type represented by i, position represented by pos,
     //and direction of new box relative to old box represented by dir
     private void GenerateABox(int i, Vector3 newpos, int dir)
     {
@@ -691,7 +691,7 @@ public class MainCharacter : MonoBehaviour
         Vector3 medium = new Vector3(-0.05f, 0, -0.05f);
         Vector3 large = new Vector3(0f, 0, 0f);
         float sizeMultiplier = getSizeMultiplier();
-       
+
         if (i >= 0 && i <= 2) //cylinders
         {
             shape = 1;
@@ -700,7 +700,7 @@ public class MainCharacter : MonoBehaviour
             {
                 newblock.gameObject.GetComponent<Renderer>().material.color = new Color(0.15f, 0.1f, 0.15f,1f);
                 newblock.gameObject.transform.localScale += new Vector3(-0.2f, 0, -0.2f);
-                
+
             }
             else if (i == 1) //medium
             {
@@ -796,7 +796,7 @@ public class MainCharacter : MonoBehaviour
 
         return score;
     }
-    
+
     IEnumerator ShowMessage (string message, float delay, int index) {
         if (index == 1)
         {
@@ -823,7 +823,7 @@ public class MainCharacter : MonoBehaviour
             centerText.enabled = false;
 
         }
-        
+
         else if (index == 4)
         {
             centerText.text = message;
