@@ -62,7 +62,7 @@ namespace Assets.Code.Menus
 				
 				_instruction.onClick.AddListener(() =>
 				{
-					SceneManager.LoadScene(2);
+					SceneManager.LoadScene(3);
 					Time.timeScale=1;
 					/*
 					Object[] objects = GameObject.FindObjectsOfType (typeof(GameObject));
