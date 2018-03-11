@@ -101,6 +101,7 @@ public class MainCharacter : MonoBehaviour
     private float starttime;
     void Start()
     {
+        starttime = Time.time;
         line = GetComponent<LineRenderer>();
         camera = GameObject.Find("Main Camera");
         cameraTargetPos = camera.transform.position;
@@ -132,10 +133,12 @@ public class MainCharacter : MonoBehaviour
         highestText = GameObject.Find("HighestScore").GetComponent<Text>();
         centerText = GameObject.Find("CenterText").GetComponent<Text>();
         blocksLeftText = GameObject.Find("BlockLeftText").GetComponent<Text>();
-        //timeLimitText = GameObject.Find("TimeLimitText").GetComponent<Text>();
+        timeLimitText = GameObject.Find("TimeLimitText").GetComponent<Text>();
+        //timeLimitText.material.color = Color.red;
+        //GameObject timelimit = GameObject.FindGameObjectWithTag("TimeLimit");
+        //timelimit.GetComponent<Renderer>().material.color = Color.red;
 
         UI = new UIManager();
-
 
 
         highestscore = PlayerPrefs.GetInt("highestscore", 0);
@@ -173,6 +176,7 @@ public class MainCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (canMove)
         {
             //controls character movement and jumping
@@ -259,11 +263,21 @@ public class MainCharacter : MonoBehaviour
 
         blocksLeftText.text = "Jumps Left: " + blocksLeft;
 
-        //if (Mathf.RoundToInt(timeleft - Time.time + starttime) <= 0)
-        //{
-        //    timeLimitText.text = "Time Limit: 0";
-        //}
-        //timeLimitText.text = "Time Limit: " + Mathf.RoundToInt(timeleft-Time.time+starttime);
+        if (Mathf.RoundToInt(timeleft - Time.time + starttime) <= 0)
+        {
+
+            timeLimitText.text = "Time Limit: 0";
+
+
+        }
+        else
+        {
+            timeLimitText.text = "Time Limit: " + Mathf.RoundToInt(timeleft-Time.time+starttime);
+        }
+
+        
+        
+
 
     }
 
@@ -419,8 +433,10 @@ public class MainCharacter : MonoBehaviour
         {
             blocknumber++;//increment number of block jumped
             blocksLeft--; //decrement blocks left
+            
             starttime = Time.time;
-            //timeLimitText.text = "Time Limit: " + timeleft;
+            timeLimitText.text = "Time Limit: " + timeleft;
+            
             if (ReturnDirection(collision.gameObject, this.gameObject) == HitDirection.Top)
             {
                 successJump = true;
@@ -566,7 +582,7 @@ public class MainCharacter : MonoBehaviour
             scoreMessage += "\nHighest Score: " + highestscore;
             StartCoroutine(ShowMessage(scoreMessage, 1f, 2));
 
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //SceneManager.LoadScene(1);
         }
     }
 
@@ -795,6 +811,7 @@ public class MainCharacter : MonoBehaviour
             highestText.enabled = true;
             yield return new WaitForSeconds(delay);
             highestText.enabled = false;
+
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 

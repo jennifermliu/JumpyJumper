@@ -16,6 +16,8 @@ TagManager:
   - quit
   - destination
   - blocksLeftText
+  - HighestText
+  - TimeLimit
   layers:
   - Default
   - TransparentFX
