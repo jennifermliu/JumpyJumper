@@ -4,8 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Code.Menus;
-using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Collections;
 using UnityEngine.SceneManagement;
@@ -349,6 +347,7 @@ public class MainCharacter : MonoBehaviour
         //Show menu when pressing p
         if (Input.GetKeyDown("p"))
         {
+            
             if (!menushowed)
             {
                 UI.ShowPauseMenu();

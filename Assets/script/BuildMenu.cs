@@ -44,7 +44,7 @@ namespace Assets.Code.Menus
 					Debug.Log("quit");
 					
 					Application.Quit();
-					UnityEditor.EditorApplication.isPlaying = false;
+					//UnityEditor.EditorApplication.isPlaying = false;
 			
 				});
 			}	

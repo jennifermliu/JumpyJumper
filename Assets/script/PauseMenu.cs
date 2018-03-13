@@ -33,6 +33,9 @@ namespace Assets.Code.Menus
 				//var _resume = GameObject.Find("Resume").GetComponent<Button>();
 				//var _restart = GameObject.Find("Restart").GetComponent<Button>();
 				//var _quit = GameObject.Find("Quit").GetComponent<Button>();
+				GameObject mainCharater = GameObject.FindGameObjectWithTag("Player");
+				MainCharacter mc = mainCharater.GetComponent<MainCharacter>();
+
 				
 
 				if (_resume !=null || _restart!=null || _quit!=null || _instruction!=null)
@@ -49,6 +52,8 @@ namespace Assets.Code.Menus
 				_resume.onClick.AddListener(() =>
 				{
 					Time.timeScale=1;
+					
+					
 					/*
 					Object[] objects = GameObject.FindObjectsOfType (typeof(GameObject));
 					foreach (GameObject go in objects) {
@@ -56,7 +61,7 @@ namespace Assets.Code.Menus
 					}
 					//GameObject.Destroy(Go,0);
 					*/
-					
+					mc.menushowed = false;
 					Hide();				
 				});
 				
@@ -88,10 +93,10 @@ namespace Assets.Code.Menus
 				
 				_quit.onClick.AddListener(() =>
 				{
-					Debug.Log("quit");
+					//Debug.Log("quit");
 					
 					Application.Quit();
-					UnityEditor.EditorApplication.isPlaying = false;
+					//UnityEditor.EditorApplication.isPlaying = false;
 			
 				});
 				
